@@ -4,7 +4,7 @@ import "./App.css";
 
 function App() {
   return (
-    <div>
+    <div className=" font-opensans ">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
