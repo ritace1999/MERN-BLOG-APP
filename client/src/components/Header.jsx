@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
+import { MdKeyboardArrowDown } from "react-icons/md";
 const NavItemsInfo = [
   { name: "Home", type: "link" },
   { name: "Articles", type: "link" },
@@ -10,6 +10,12 @@ const NavItemsInfo = [
   { name: "Faq", type: "link" },
 ];
 const NavItem = ({ item }) => {
+  const [dropdown, setDropdown] = useState(false);
+  const toggleHandler = () => {
+    setDropdown((currState) => {
+      return !currState;
+    });
+  };
   return (
     <li className=" relative group">
       {item.type === "link" ? (
@@ -17,30 +23,37 @@ const NavItem = ({ item }) => {
           <Link to="/" className="px-4 py-2">
             {item.name}
           </Link>
-          <span className="text-blue-500 absolute transition-all duration-500 font-bold right-0 top-0  group-hover:right-[90%] opacity-0 group-hover:opacity-100">
+          <span className=" cursor-pointer text-blue-500 absolute transition-all duration-500 font-bold right-0 top-0  group-hover:right-[90%] opacity-0 group-hover:opacity-100">
             |
           </span>
         </>
       ) : (
-        <>
-          <Link to="/" className="px-4 py-2 flex gap-x-1 items-center">
+        <div className=" flex flex-col items-center">
+          <button
+            className="px-4 py-2 flex gap-x-1 items-center"
+            onClick={toggleHandler}
+          >
             <span>{item.name}</span>
             <MdKeyboardArrowDown />
-          </Link>
-          <div className="hidden transition-all duration-500 pt-4 absolute bottom-0 right-0 transform translate-y-full group-hover:block w-max">
-            <ul className="flex flex-col shadow-lg rounded-lg overflow-hidden">
+          </button>
+          <div
+            className={`${
+              dropdown ? "block" : "hidden"
+            } lg:hidden transition-all duration-500 pt-4 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-max `}
+          >
+            <ul className="bg-dark-hard lg:bg-transparent text-center flex flex-col shadow-lg rounded-lg overflow-hidden">
               {item.items.map((page) => (
                 <Link
                   key={page}
-                  href="/"
-                  className="hover:bg-dark-hard hover:text-white px-4 py-2 text-white lg:text-dark-soft"
+                  to="/"
+                  className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white lg:text-dark-soft"
                 >
                   {page}
                 </Link>
               ))}
             </ul>
           </div>
-        </>
+        </div>
       )}
     </li>
   );
@@ -55,11 +68,11 @@ const Header = () => {
   };
 
   return (
-    <section>
+    <section className="sticky top-0 left-0 right-0 z-50">
       <header className="container mx-auto px-2 flex justify-between py-4 items-center">
         <div>
           <h2 className=" font-extrabold text-xl">
-            <Link className="w-16" to="/">
+            <Link className="w-16 text-blue-800 animate-pulse" to="/">
               BLOG APP
             </Link>
           </h2>
@@ -83,7 +96,7 @@ const Header = () => {
           } transition-all  duration-300 mt-[60px] lg:mt-0 bg-dark-hard lg:bg-transparent z-[49]
            flex flex-col w-full lg:w-auto justify-center lg:justify-end lg:flex-row fixed top-0 bottom-0  lg:static gap-x-9 items-center`}
         >
-          <ul className="text-white items-center gap-y-5 lg:text-dark-soft flex flex-col lg:flex-row gap-x-2 font-semibold">
+          <ul className="text-white justify-center items-center gap-y-5 lg:text-dark-soft flex flex-col lg:flex-row gap-x-2 font-semibold">
             {NavItemsInfo.map((item) => (
               <NavItem key={item.name} item={item} />
             ))}
