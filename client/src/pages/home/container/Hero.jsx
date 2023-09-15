@@ -7,11 +7,12 @@ const Hero = () => {
     <section className="container ms-auto flex flex-col px-5 py-5 lg:flex-row">
       <div className="mt-10 lg:w-1/2">
         <h1 className="font-roboto text-3xl text-center font-bold text-dark-soft md:text-5xl lg:text-left lg:max-w-[540px] lg:text-4xl xl:text-5xl ">
-          Read the most intresting articles.
+          Explore the most intriguing articles.
         </h1>
         <p className="text-dark-light mt-4 text-center md:text-xl lg:text-left lg:text-base xl:text-xl">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nihil velit
-          optio, fugit expedita sequi molestias hesoyam aezakmi .
+          Welcome to our blog—a hub of knowledge, ideas, and inspiration.
+          Explore insightful articles, expert tips, and engaging content on
+          diverse topics. Join our intellectual journey today!
         </p>
         <div className="flex flex-col gap-y-2.5 mt-10 lg:mt-6 xl:mt-10 relative">
           <div className="relative">
@@ -32,13 +33,13 @@ const Hero = () => {
           </span>
           <ul className="flex flex-wrap gap-x-2.5 gap-y-2.5 mt-3 lg:text-sm xl:text-base">
             <li className="rounded-lg bg-blue-400 bg-opacity-20 px-3 py-1.5 text-primary font-semibold  cursor-pointer">
-              Design
+              Technology
             </li>
             <li className="rounded-lg bg-blue-400 bg-opacity-20 px-3 py-1.5 text-primary font-semibold  cursor-pointer">
-              User Experience
+              Finance
             </li>
             <li className="rounded-lg bg-blue-400 bg-opacity-20 px-3 py-1.5 text-primary font-semibold   cursor-pointer">
-              User Interfaces
+              Science
             </li>
           </ul>
         </div>
