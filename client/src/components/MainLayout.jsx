@@ -1,3 +1,5 @@
+import { CTA } from "./CTA";
+import { Footer } from "./Footer";
 import { Header } from "./Header";
 
 export const MainLayout = ({ children }) => {
@@ -5,6 +7,8 @@ export const MainLayout = ({ children }) => {
     <div>
       <Header />
       {children}
+      <CTA />
+      <Footer />
     </div>
   );
 };

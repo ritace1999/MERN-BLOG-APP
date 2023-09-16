@@ -1,15 +1,15 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
 import "./App.css";
+import { BlogDetailsPage } from "./pages/blogDetails/BlogDetailsPage";
 
 function App() {
   return (
     <div className=" font-opensans ">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route index path="/" element={<HomePage />} />
+        <Route path="/blog/:id" element={<BlogDetailsPage />} />
+      </Routes>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import images from "../../../constants/images";
+import images from "../constants/images";
 
 export const CTA = () => {
   return (
@@ -37,10 +37,10 @@ export const CTA = () => {
                   alt="laptop"
                 />
                 <div className="p-5">
-                  <h2 className="font-roboto font-bold text-xl text-dark-soft md:text-2xl lg:text[28px] lg:text-[28px]">
+                  <h2 className="font-roboto font-bold text-xl text-dark-soft md:text-2xl  lg:text-xl">
                     Best Weekly Reads
                   </h2>
-                  <p className="text-dark-light mt-3 text-sm md:text-lg ">
+                  <p className="text-dark-light mt-3 text-sm md:text-base ">
                     Stay connected with us to stay updated and engaged with a
                     wealth of interesting articles, insights, and information.
                   </p>
