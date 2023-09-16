@@ -1,8 +1,7 @@
-import React from "react";
 import { images } from "../constants";
 import { BiCheck } from "react-icons/bi";
 
-const ArticleCard = ({ className }) => {
+export const ArticleCard = ({ className }) => {
   return (
     <div
       className={`rounded-xl m-auto overflow-hidden shadow-2xl shadow-blue-500/60 ${className} `}
@@ -22,13 +21,13 @@ const ArticleCard = ({ className }) => {
         <div className="flex justify-between flex-nowrap items-center mt-6">
           <div className="flex items-center gap-2 md:gap-x-2.5">
             <img
-              className="cursor-pointer w-9 h-9 md:w-10 md:h-10"
+              className="cursor-pointer rounded-full w-9 h-9 md:w-10 md:h-10"
               src={images.profilePic}
               alt="profilepicture"
             />
             <div className="flex flex-col">
               <h4 className="font-bold italic text-dark-soft text-sm md:text-base ">
-                Monkey D. JoyBoy
+                Monkey D. Luffy
               </h4>
               <div className="flex items-center gap-x-2">
                 <span className="bg-[#35B37E] w-fit bg-opacity-20 p-1.5 rounded-full">
@@ -48,5 +47,3 @@ const ArticleCard = ({ className }) => {
     </div>
   );
 };
-
-export default ArticleCard;

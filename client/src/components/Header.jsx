@@ -59,7 +59,7 @@ const NavItem = ({ item }) => {
   );
 };
 
-const Header = () => {
+export const Header = () => {
   const [navIsVisible, setNavIsVisible] = useState(false);
   const navVisibilityHandler = () => {
     setNavIsVisible((currState) => {
@@ -109,5 +109,3 @@ const Header = () => {
     </section>
   );
 };
-
-export default Header;

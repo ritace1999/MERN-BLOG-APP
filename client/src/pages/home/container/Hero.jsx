@@ -1,8 +1,7 @@
-import React from "react";
 import images from "../../../constants/images";
 import { FiSearch } from "react-icons/fi";
 
-const Hero = () => {
+export const Hero = () => {
   return (
     <section className="container ms-auto flex flex-col px-5 py-5 lg:flex-row">
       <div className="mt-10 lg:w-1/2">
@@ -50,5 +49,3 @@ const Hero = () => {
     </section>
   );
 };
-
-export default Hero;
