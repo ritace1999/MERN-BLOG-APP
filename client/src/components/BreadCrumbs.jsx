@@ -5,11 +5,11 @@ export const BreadCrumbs = ({ data }) => {
       {data.map((items, index) => (
         <div
           key={index}
-          className="text-dark-light text-sm opacity-50  font-roboto md:text-sm "
+          className="text-dark-light text-sm opacity-50   font-roboto "
         >
           <Link to={items.link}>{items.name}</Link>
           {index !== data.length - 1 && (
-            <span className="cursor-pointer px-2">/</span>
+            <span className="cursor-pointer px-3">/</span>
           )}
         </div>
       ))}
