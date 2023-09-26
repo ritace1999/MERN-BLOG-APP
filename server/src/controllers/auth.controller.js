@@ -25,10 +25,6 @@ class AuthController {
         email,
         password: hashedPassword,
       });
-      // Generate a JWT token
-      const token = jwt.sign({ userId: newUser._id }, process.env.JWT_KEY, {
-        expiresIn: "2h", // Token expires in 1 hour (adjust as needed)
-      });
 
       return res.status(201).json({
         _id: newUser._id,
@@ -37,7 +33,6 @@ class AuthController {
         email: newUser.email,
         verified: newUser.verified,
         admin: newUser.admin,
-        token: token,
       });
     } catch (err) {
       console.error(err);
@@ -72,7 +67,7 @@ class AuthController {
 
       // If email and password are correct, generate a JWT token
       const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY, {
-        expiresIn: "2h", // Token expires in 1 hour (adjust as needed)
+        expiresIn: "30d",
       });
 
       return res.status(200).json({

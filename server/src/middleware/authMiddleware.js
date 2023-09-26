@@ -24,7 +24,7 @@ export const authCheck = async (req, res, next) => {
     } catch (e) {
       next({
         msg: "Token Invalid",
-        status: 401,
+        status: 403,
       });
     }
   } else {

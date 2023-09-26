@@ -1,4 +1,6 @@
 import { uploadPic } from "../middleware/upload.profile.js";
+import { fileRemover } from "../utils/fileRemover.js";
+
 import User from "../models/user.model.js";
 
 class ProfileController {
@@ -82,57 +84,49 @@ class ProfileController {
       });
     }
   };
+
   updateProfilePic = async (req, res, next) => {
     try {
       // Use the uploadPic middleware to handle the file upload
-      uploadPic.single("profilePicture")(req, res, async function (err) {
+      uploadPic.single("profilePic")(req, res, async function (err) {
         if (err) {
           // Handle the upload error
           const error = new Error("An unknown error occurred when uploading");
-          return next(error);
-        }
-
-        if (req.file) {
-          // If a file was uploaded, update the user's avatar
-          const updatedUser = await User.findByIdAndUpdate(
-            req.user._id,
-            {
-              avatar: req.file.filename,
-            },
-            { new: true }
-          );
-
-          return res.json({
-            _id: updatedUser._id,
-            avatar: updatedUser.avatar,
-            name: updatedUser.name,
-            email: updatedUser.email,
-            verified: updatedUser.verified,
-            admin: updatedUser.admin,
-          });
+          next(error);
         } else {
-          // If no file was uploaded, remove the user's existing avatar
-          const updatedUser = await User.findByIdAndUpdate(
-            req.user._id,
-            {
-              avatar: "",
-            },
-            { new: true }
-          );
-
-          // Remove the old avatar file
-          if (updatedUser.avatar) {
-            fileRemover(updatedUser.avatar);
+          if (req.file) {
+            let filename;
+            let updatedUser = await User.findById(req.user._id);
+            filename = updatedUser.avatar;
+            if (filename) {
+              fileRemover(filename);
+            }
+            updatedUser.avatar = req.file.filename;
+            await updatedUser.save();
+            res.json({
+              _id: updatedUser._id,
+              avatar: updatedUser.avatar,
+              name: updatedUser.name,
+              email: updatedUser.email,
+              verified: updatedUser.verified,
+              admin: updatedUser.admin,
+            });
+          } else {
+            let filename;
+            let updatedUser = await User.findById(req.user._id);
+            filename = updatedUser.avatar;
+            updatedUser.avatar = "";
+            await updatedUser.save();
+            fileRemover(filename);
+            res.json({
+              _id: updatedUser._id,
+              avatar: updatedUser.avatar,
+              name: updatedUser.name,
+              email: updatedUser.email,
+              verified: updatedUser.verified,
+              admin: updatedUser.admin,
+            });
           }
-
-          return res.json({
-            _id: updatedUser._id,
-            avatar: updatedUser.avatar,
-            name: updatedUser.name,
-            email: updatedUser.email,
-            verified: updatedUser.verified,
-            admin: updatedUser.admin,
-          });
         }
       });
     } catch (error) {
