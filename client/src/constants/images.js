@@ -7,6 +7,7 @@ import Fb from "../assets/footerIcon/Fb.png";
 import In from "../assets/footerIcon/Linkedin.png";
 import Google from "../assets/footerIcon/Google.png";
 import Git from "../assets/footerIcon/Github.png";
+import AuthImg from "../assets/AuthPic.jpg";
 const images = {
   HeroImage,
   PostOneImage,
@@ -17,5 +18,6 @@ const images = {
   In,
   Google,
   Git,
+  AuthImg,
 };
 export default images;

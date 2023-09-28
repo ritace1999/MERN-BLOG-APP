@@ -3,10 +3,13 @@ import { connectDB } from "./dataBase/connection.js";
 import routes from "./routes/index.js";
 import { config } from "dotenv";
 import { errorMiddleware } from "./middleware/errorMiddleware.js";
+import cors from "cors";
 
 const app = express();
 config();
 const PORT = process.env.PORT;
+
+app.use(cors());
 
 app.use(express.json());
 

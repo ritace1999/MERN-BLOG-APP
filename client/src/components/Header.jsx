@@ -68,7 +68,7 @@ export const Header = () => {
   };
 
   return (
-    <section className="sticky bg-[#E2E0DD] top-0 left-0 right-0 z-50">
+    <section className="sticky bg-[#E2E0DD]  top-0 left-0 right-0 z-50">
       <header className="container mx-auto px-2 flex justify-between py-4 items-center">
         <div>
           <h2 className=" font-extrabold text-xl">
@@ -102,7 +102,7 @@ export const Header = () => {
             ))}
           </ul>
           <button className="mt-5 lg:mt-0 border-2 border-blue-600 text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300">
-            Sign In
+            <Link to="/login">Login </Link>
           </button>
         </div>
       </header>
