@@ -1,24 +1,62 @@
-import React, { useState } from "react";
-
+import { useState, useEffect } from "react";
 import Layout from "../../components/authLayout/AuthLayout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import styles from "../../styles/form.module.css";
 import { HiEnvelope, HiFingerPrint } from "react-icons/hi2";
 import { useFormik } from "formik";
+import { useMutation } from "react-query";
+import toast from "react-hot-toast";
 import { loginValidate } from "../../lib/AuthValidation";
+import { loginUser } from "../../services/index/apiService";
+import { userActions } from "../../store/reducers/userReducer";
+
 function LoginLayout() {
   const [show, setShow] = useState(false);
+
+  const dispatch = useDispatch();
+  const userState = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+
+  const mutation = useMutation((values) => loginUser(values), {
+    onError: (error) => {
+      if (error.response && error.response.status === 401) {
+        const errorMessage = error.response.data.msg;
+        if (errorMessage === "Invalid email") {
+          toast.error("Invalid email");
+        } else if (errorMessage === "Invalid password") {
+          toast.error("Invalid password");
+        } else {
+          toast.error(errorMessage);
+        }
+      } else {
+        toast.error(error.message);
+      }
+    },
+    onSuccess: (data) => {
+      dispatch(userActions.setUserInfo(data));
+      localStorage.setItem("account", JSON.stringify(data));
+      toast.success("Login successful");
+    },
+  });
+
+  useEffect(() => {
+    if (userState.userInfo) {
+      navigate("/");
+    }
+  }, [navigate, userState.userInfo]);
+
   const formik = useFormik({
     initialValues: {
+      name: "",
       email: "",
-      password: "",
     },
     validate: loginValidate,
-    onSubmit,
+    onSubmit: async (values) => {
+      mutation.mutate(values);
+    },
   });
-  async function onSubmit(value) {
-    console.log(value);
-  }
   return (
     //  {/*Title*/}
     <Layout className=" container">
@@ -50,23 +88,22 @@ function LoginLayout() {
 
           <div
             className={`${styles.input_group} ${
-              formik.errors.password && formik.touched.password
+              formik.errors.email && formik.touched.email
                 ? "border-rose-500"
                 : ""
             }`}
           >
             <input
-              type={`${show ? "text" : "password"}`}
+              type={`${show.password ? "text" : "password"}`}
               name="password"
               placeholder="Password"
               className={styles.input_text}
               {...formik.getFieldProps("password")}
             />
             <span
-              onClick={() => setShow(!show)}
+              onClick={() => setShow({ ...show, password: !show.password })}
               className="icon flex items-center px-4 cursor-pointer	"
             >
-              {" "}
               <HiFingerPrint size={20} />
             </span>
           </div>

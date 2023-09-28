@@ -17,3 +17,12 @@ export const registerUser = async (formData) => {
     throw error;
   }
 };
+
+export const loginUser = async (formData) => {
+  try {
+    const response = await axiosInstance.post("/login", formData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

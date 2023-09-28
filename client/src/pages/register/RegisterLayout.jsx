@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "../../components/authLayout/AuthLayout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../../styles/form.module.css";
 import { HiEnvelope, HiFingerPrint, HiUser } from "react-icons/hi2";
 import { useFormik } from "formik";
 import { useMutation } from "react-query";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { registerValidate } from "../../lib/AuthValidation";
 import { registerUser } from "../../services/index/apiService";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../store/reducers/userReducer";
 function Register() {
   const [show, setShow] = useState({ password: false, cpassword: false });
+  const dispatch = useDispatch();
+  const userState = useSelector((state) => state.user);
 
   const navigate = useNavigate();
 
@@ -23,11 +26,18 @@ function Register() {
         toast.error("Registration failed: " + error.message);
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      dispatch(userActions.setUserInfo(data));
+      localStorage.setItem("account", JSON.stringify(data));
       toast.success("Registration successful");
-      navigate("/login");
     },
   });
+
+  useEffect(() => {
+    if (userState.userInfo) {
+      navigate("/");
+    }
+  }, [navigate, userState.userInfo]);
 
   const formik = useFormik({
     initialValues: {
