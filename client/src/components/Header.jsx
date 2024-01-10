@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,6 +13,7 @@ const NavItemsInfo = [
 ];
 const NavItem = ({ item }) => {
   const [dropdown, setDropdown] = useState(false);
+
   const toggleHandler = () => {
     setDropdown((currState) => {
       return !currState;
@@ -63,6 +64,7 @@ const NavItem = ({ item }) => {
 
 export const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [navIsVisible, setNavIsVisible] = useState(false);
   const userState = useSelector((state) => state.user);
   const [profileDropdown, setprofileDropdown] = useState(false);
@@ -74,6 +76,7 @@ export const Header = () => {
   };
   const logoutHandler = () => {
     dispatch(logout());
+    navigate("/");
   };
 
   return (
@@ -127,21 +130,24 @@ export const Header = () => {
               <div className="relative group">
                 <div className=" flex flex-col items-center">
                   <button
-                    className=" flex gap-x-1 items-center mt-5 lg:mt-0 border-2 border-blue-600 text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300"
+                    className=" flex gap-x-1 items-center lg:mx-6 mt-5 lg:mt-0 border-2 border-blue-600 text-blue-600 px-4 py-2 rounded-full font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300"
                     onClick={() => setprofileDropdown(!profileDropdown)}
                   >
-                    <span>Profile</span>
+                    <span>Account</span>
                     <MdKeyboardArrowDown />
                   </button>
                   {/* Profile Dropdown */}
                   <div
                     className={`${
                       profileDropdown ? "block" : "hidden"
-                    } lg:hidden transition-all duration-500 pt-4 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-max `}
+                    } lg:hidden transition-all duration-500 pt-4 lg:px-8 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-full `}
                   >
                     <ul className="bg-dark-hard lg:bg-transparent text-center flex flex-col shadow-lg rounded-lg overflow-hidden">
-                      <button className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white lg:text-dark-soft">
-                        Dashboard
+                      <button
+                        onClick={() => navigate("/profile")}
+                        className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white lg:text-dark-soft"
+                      >
+                        Profile
                       </button>
                       <button
                         onClick={logoutHandler}

@@ -4,40 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "../../styles/form.module.css";
 import { HiEnvelope, HiFingerPrint, HiUser } from "react-icons/hi2";
 import { useFormik } from "formik";
-import { useMutation } from "react-query";
 import toast from "react-hot-toast";
 import { registerValidate } from "../../lib/AuthValidation";
 import { registerUser } from "../../services/index/apiService";
-import { useDispatch, useSelector } from "react-redux";
-import { userActions } from "../../store/reducers/userReducer";
+import zxcvbn from "zxcvbn";
+import { useDispatch } from "react-redux";
+
 function Register() {
   const [show, setShow] = useState({ password: false, cpassword: false });
+
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const dispatch = useDispatch();
-  const userState = useSelector((state) => state.user);
-
   const navigate = useNavigate();
-
-  const mutation = useMutation(registerUser, {
-    onError: (error) => {
-      if (error.response && error.response.status === 400) {
-        const errorMessage = error.response.data.msg;
-        toast.error(errorMessage);
-      } else {
-        toast.error("Registration failed: " + error.message);
-      }
-    },
-    onSuccess: (data) => {
-      dispatch(userActions.setUserInfo(data));
-      localStorage.setItem("account", JSON.stringify(data));
-      toast.success("Registration successful");
-    },
-  });
-
-  useEffect(() => {
-    if (userState.userInfo) {
-      navigate("/");
-    }
-  }, [navigate, userState.userInfo]);
 
   const formik = useFormik({
     initialValues: {
@@ -48,11 +26,58 @@ function Register() {
     },
     validate: registerValidate,
     onSubmit: async (values) => {
-      const { cpassword, ...formFields } = values;
-
-      mutation.mutate(formFields);
+      try {
+        await registerUser(values);
+        toast.success("Verify Your Email.");
+        navigate(`/otp?email=${values.email}`);
+      } catch (error) {
+        toast.error(error.message);
+      }
     },
   });
+
+  function onChange(value) {
+    setVerified(true);
+  }
+
+  useEffect(() => {
+    const result = zxcvbn(formik.values.password);
+    setPasswordStrength(result.score);
+  }, [formik.values.password]);
+
+  const getPasswordStrengthLabel = (strength) => {
+    switch (strength) {
+      case 0:
+        return "Weak";
+      case 1:
+        return "Fair";
+      case 2:
+        return "Good";
+      case 3:
+        return "Strong";
+      case 4:
+        return "Very Strong";
+      default:
+        return "";
+    }
+  };
+
+  const getPasswordStrengthColor = (strength) => {
+    switch (strength) {
+      case 0:
+        return "bg-red-500";
+      case 1:
+        return "bg-orange-500";
+      case 2:
+        return "bg-yellow-500";
+      case 3:
+        return "bg-green-500";
+      case 4:
+        return "bg-green-500";
+      default:
+        return "";
+    }
+  };
 
   return (
     <Layout>
@@ -103,27 +128,52 @@ function Register() {
             </span>
           </div>
 
-          <div
-            className={`${styles.input_group} ${
-              formik.errors.password && formik.touched.password
-                ? "border-rose-500"
-                : ""
-            }`}
-          >
-            <input
-              type={`${show.password ? "text" : "password"}`}
-              name="password"
-              placeholder="Password"
-              className={styles.input_text}
-              {...formik.getFieldProps("password")}
-            />
-            <span
-              onClick={() => setShow({ ...show, password: !show.password })}
-              className="icon flex items-center px-4 cursor-pointer	"
+          <div className="relative">
+            <div
+              className={`${styles.input_group} ${
+                formik.errors.password && formik.touched.password
+                  ? "border-rose-500"
+                  : ""
+              }`}
             >
-              <HiFingerPrint size={20} />
-            </span>
+              <input
+                type={`${show.password ? "text" : "password"}`}
+                name="password"
+                placeholder="Password"
+                className={styles.input_text}
+                {...formik.getFieldProps("password")}
+              />
+              <span
+                onClick={() => setShow({ ...show, password: !show.password })}
+                className="icon flex items-center px-4 cursor-pointer	"
+              >
+                <HiFingerPrint size={20} />
+              </span>
+            </div>
+            {/* Password strength bar */}
+            {formik.values.password && (
+              <div className="absolute bottom-0 w-full h-2">
+                <div
+                  className={`h-full ${getPasswordStrengthColor(
+                    passwordStrength
+                  )}`}
+                  style={{
+                    width: `${(passwordStrength + 1) * 20}%`,
+                    transition: "width 0.3s ease",
+                  }}
+                ></div>
+              </div>
+            )}
           </div>
+
+          {/* Password strength meter */}
+          {formik.values.password && (
+            <div className="text-sm mt-2">
+              Password Strength: {getPasswordStrengthLabel(passwordStrength)}
+            </div>
+          )}
+
+          {/* ... other form fields ... */}
 
           <div
             className={`${styles.input_group} ${
@@ -159,12 +209,11 @@ function Register() {
           )}
 
           <div className="input_button">
-            <button className={styles.button} type="submit">
+            <button className={`${styles.button} mt-2`} type="submit">
               Register
             </button>
           </div>
         </form>
-        {/* bottom*/}
         <p className="text-center text-dark-light">
           Already have an account?
           <Link className="text-blue-500 hover:text-blue-700" to={"/login"}>
