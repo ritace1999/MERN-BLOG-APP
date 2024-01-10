@@ -154,14 +154,6 @@ class AuthController {
         expiresAt: { $gt: new Date() },
       }).sort({ createdAt: -1 });
 
-      console.log("User ID:", user._id);
-      console.log("Entered OTP:", otp);
-      console.log("Stored OTP:", latestOTP ? latestOTP.otp : "No OTP found");
-      console.log(
-        "Expiration Time:",
-        latestOTP ? latestOTP.expiresAt : "No OTP found"
-      );
-
       // Check if the OTP is valid
       if (!latestOTP || latestOTP.otp !== otp) {
         return res.status(401).json({

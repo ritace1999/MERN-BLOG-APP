@@ -32,7 +32,6 @@ const OTPPage = () => {
         email,
         otp: enteredOTP,
       });
-      console.log(response.data.verified);
 
       if (response.data.verified) {
         toast.success("OTP verification successful. Redirecting to login...");

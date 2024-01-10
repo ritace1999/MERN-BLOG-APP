@@ -24,7 +24,6 @@ function ResetPassword() {
     },
     {
       onSuccess: (data) => {
-        console.log(data);
         if (data.success == false) {
           toast.error(data.msg || "An error occurred");
         } else {
