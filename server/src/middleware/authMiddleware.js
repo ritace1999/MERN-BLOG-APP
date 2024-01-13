@@ -34,3 +34,24 @@ export const authCheck = async (req, res, next) => {
     });
   }
 };
+
+export const adminCheck = async (req, res, next) => {
+  try {
+    // Assuming your User model has an 'isAdmin' field that denotes admin privileges
+    const user = req.user;
+
+    if (user && user.admin) {
+      next(); // User is an admin, continue with the next middleware
+    } else {
+      next({
+        msg: "Access Denied",
+        status: 403,
+      });
+    }
+  } catch (error) {
+    next({
+      msg: "Error checking admin privileges",
+      status: 500,
+    });
+  }
+};

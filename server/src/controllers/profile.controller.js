@@ -149,7 +149,6 @@ class ProfileController {
             let filename;
             let updatedUser = await User.findById(req.user._id);
             filename = updatedUser.avatar;
-            ``;
             if (filename) {
               fileRemover(filename);
             }

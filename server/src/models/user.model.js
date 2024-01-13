@@ -7,7 +7,8 @@ const UserSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     verified: { type: Boolean, default: false },
-    verificationCode: { type: String, required: false }, 
+    admin: { type: Boolean, default: false },
+    verificationCode: { type: String, required: false },
     otp: { type: String, default: "" },
     otpExpiresAt: { type: Date, default: null },
     resetToken: String,
@@ -17,5 +18,5 @@ const UserSchema = new Schema(
     timestamps: true,
   }
 );
-const User = model("users", UserSchema);
+const User = model("User", UserSchema);
 export default User;
