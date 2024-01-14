@@ -14,6 +14,8 @@ import Text from "@tiptap/extension-text";
 import Italic from "@tiptap/extension-italic";
 import { generateHTML } from "@tiptap/html";
 import parse from "html-react-parser";
+import BlogDetailSkeleton from "./components/blogDetailSkeleton";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const postsData = [
   {
@@ -76,43 +78,49 @@ export const BlogDetailsPage = () => {
 
   return (
     <MainLayout>
-      <section className=" container mx-auto w-[88%] flex flex-col  py-5 lg:flex-row lg:gap-x5 lg:items-start">
-        <article className="flex-1  ">
-          <BreadCrumbs data={breadCrumbsData} />
-          <img
-            className="rounded-xl w-full"
-            src={
-              data?.photo
-                ? stables.UPLOAD_FOLDER_BASE_URL + data.photo
-                : images.notFound
-            }
-            alt="art"
-          />
-          <div className="mt-4 flex gap-2">
-            {data?.categories.map((category) => (
-              <Link
-                key={category._id}
-                to={`/blog?category=${category.title}`}
-                className="text-primary text-sm font-roboto inline-block  md:text-base"
-              >
-                {category.title}
-              </Link>
-            ))}
-          </div>
+      {isLoading ? (
+        <BlogDetailSkeleton />
+      ) : isError ? (
+        <ErrorMessage message={"Error occured while fetching data."} />
+      ) : (
+        <section className=" container mx-auto w-[88%] flex flex-col  py-5 lg:flex-row lg:gap-x5 lg:items-start">
+          <article className="flex-1  ">
+            <BreadCrumbs data={breadCrumbsData} />
+            <img
+              className="rounded-xl w-full"
+              src={
+                data?.photo
+                  ? stables.UPLOAD_FOLDER_BASE_URL + data.photo
+                  : images.notFound
+              }
+              alt="art"
+            />
+            <div className="mt-4 flex gap-2">
+              {data?.categories.map((category) => (
+                <Link
+                  key={category._id}
+                  to={`/blog?category=${category.title}`}
+                  className="text-primary text-sm font-roboto inline-block  md:text-base"
+                >
+                  {category.title}
+                </Link>
+              ))}
+            </div>
 
-          <h1 className="text-lg font-bold font-roboto mt-4 text-dark-hard md:text-[26px]">
-            {data?.title}
-          </h1>
-          <div className="mt-4 prose prose-sm sm:prose-base">{body}</div>
-          <CommentsContainer className="mt-10 " logginedUserId="a" />
-        </article>
-        <SuggestedPosts
-          header={"Latest Article"}
-          posts={postsData}
-          tags={tagsData}
-          className="mt-8 lg:mt-10 lg:mx-5 lg:max-w-[360px] "
-        />
-      </section>
+            <h1 className="text-lg font-bold font-roboto mt-4 text-dark-hard md:text-[26px]">
+              {data?.title}
+            </h1>
+            <div className="mt-4 prose prose-sm sm:prose-base">{body}</div>
+            <CommentsContainer className="mt-10 " logginedUserId="a" />
+          </article>
+          <SuggestedPosts
+            header={"Latest Article"}
+            posts={postsData}
+            tags={tagsData}
+            className="mt-8 lg:mt-10 lg:mx-5 lg:max-w-[360px] "
+          />
+        </section>
+      )}
     </MainLayout>
   );
 };

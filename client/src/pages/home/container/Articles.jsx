@@ -4,6 +4,8 @@ import { ArticleCard } from "../../../components/ArticleCard";
 import { RiArrowRightDoubleFill } from "react-icons/ri";
 import { getPost } from "../../../services/index/posts";
 import toast from "react-hot-toast";
+import ArticleCardSkeleton from "../../../components/ArticleCardSkeleton";
+import ErrorMessage from "../../../components/ErrorMessage";
 
 export const Articles = () => {
   const { data, isLoading, isError } = useQuery({
@@ -19,16 +21,24 @@ export const Articles = () => {
   return (
     <section className="container flex flex-col px-5 py-4">
       <div className="flex flex-wrap md:gap-x-4 gap-y-5 pb-10">
-        {!isLoading &&
-          !isError &&
-          data &&
+        {isLoading ? (
+          [...Array(3)].map((item, index) => (
+            <ArticleCardSkeleton
+              key={index}
+              className="w-full md:w-[calc(50%-20px)] lg:w-[calc(33.33%-21px)]"
+            />
+          ))
+        ) : isError ? (
+          <ErrorMessage message="Error occured while fetching data." />
+        ) : (
           data.map((post) => (
             <ArticleCard
               key={post._id}
               post={post}
               className="w-full md:w-[calc(50%-20px)] lg:w-[calc(33.33%-21px)] "
             />
-          ))}
+          ))
+        )}
       </div>
       <button className="flex mx-auto item-center gap-x-2 font-bold text-primary  border-2 border-blue-600 px-3 py-3 rounded-xl hover:bg-blue-600 hover:text-white ">
         <Link to="/articles">

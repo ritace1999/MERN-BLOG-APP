@@ -19,7 +19,6 @@ export const getPost = async () => {
 export const getPostBySlug = async ({ slug }) => {
   try {
     const response = await axiosInstance.get(`/posts/${slug}`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     if (error.response && error.response.data.msg)
