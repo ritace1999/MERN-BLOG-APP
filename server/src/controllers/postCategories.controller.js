@@ -7,7 +7,7 @@ class PostCategoriesController {
       if (category.length == 0) {
         return res.status(404).json({ msg: "Category not found" });
       }
-      return res.json({ category });
+      return res.json(category);
     } catch (error) {
       next({
         msg: "Unable to show categories at this moment",

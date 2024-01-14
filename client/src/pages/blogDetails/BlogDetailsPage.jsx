@@ -1,16 +1,19 @@
-import { Link } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
 import { BreadCrumbs } from "../../components/BreadCrumbs";
 import { MainLayout } from "../../components/MainLayout";
-import { images } from "../../constants";
+import { images, stables } from "../../constants";
 import { SuggestedPosts } from "./container/SuggestedPosts";
 import { CommentsContainer } from "../../components/comments/CommentsContainer";
-
-const breadCrumbsData = [
-  { name: "Home", link: "/" },
-  { name: "Blog", link: "/blog" },
-  { name: "Article title", link: "/blog/1" },
-];
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { getPostBySlug } from "../../services/index/posts";
+import Bold from "@tiptap/extension-bold";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
+import Italic from "@tiptap/extension-italic";
+import { generateHTML } from "@tiptap/html";
+import parse from "html-react-parser";
 
 const postsData = [
   {
@@ -49,6 +52,28 @@ const tagsData = [
 ];
 
 export const BlogDetailsPage = () => {
+  const { slug } = useParams();
+  const [breadCrumbsData, setBreadCrumbsData] = useState([]);
+  const [body, setBody] = useState(null);
+
+  const { data, isError, isLoading } = useQuery({
+    queryFn: () => getPostBySlug({ slug }),
+    queryKey: ["blog", slug],
+    onSuccess: (data) => {
+      setBreadCrumbsData([
+        { name: "Home", link: "/" },
+        { name: "Blog", link: "/blog" },
+        { name: "Article title", link: `/blog/${data.slug}` },
+      ]);
+
+      setBody(
+        parse(
+          generateHTML(data?.body, [Document, Paragraph, Text, Bold, Italic])
+        )
+      );
+    },
+  });
+
   return (
     <MainLayout>
       <section className=" container mx-auto w-[88%] flex flex-col  py-5 lg:flex-row lg:gap-x5 lg:items-start">
@@ -56,32 +81,29 @@ export const BlogDetailsPage = () => {
           <BreadCrumbs data={breadCrumbsData} />
           <img
             className="rounded-xl w-full"
-            src={images.PostOneImage}
+            src={
+              data?.photo
+                ? stables.UPLOAD_FOLDER_BASE_URL + data.photo
+                : images.notFound
+            }
             alt="art"
           />
-          <Link
-            to="/blog?category=selectedCategory"
-            className="text-primary text-sm font-roboto inline-block mt-4 md:text-base"
-          >
-            TECHNOLOGY
-          </Link>
-          <h1 className="text-lg font-bold font-roboto mt-4 text-dark-hard md:text-[26px]">
-            The futures are a sign that the cryptocurrency is becoming
-            mainstream.
-          </h1>
-          <div className="mt-4 text-dark-soft">
-            <p className="leading-7 text-sm">
-              The emergence of futures contracts for cryptocurrencies signals
-              their growing acceptance in mainstream finance. These contracts
-              attract institutional investors, offering risk management tools,
-              increased liquidity, and regulatory oversight. They contribute to
-              price discovery, fostering stability. However, the cryptocurrency
-              market remains speculative and volatile, necessitating caution and
-              research for investors. While futures reflect a maturing
-              landscape, the inherent risks, including price fluctuations and
-              regulatory shifts, persist.
-            </p>
+          <div className="mt-4 flex gap-2">
+            {data?.categories.map((category) => (
+              <Link
+                key={category._id}
+                to={`/blog?category=${category.title}`}
+                className="text-primary text-sm font-roboto inline-block  md:text-base"
+              >
+                {category.title}
+              </Link>
+            ))}
           </div>
+
+          <h1 className="text-lg font-bold font-roboto mt-4 text-dark-hard md:text-[26px]">
+            {data?.title}
+          </h1>
+          <div className="mt-4 prose prose-sm sm:prose-base">{body}</div>
           <CommentsContainer className="mt-10 " logginedUserId="a" />
         </article>
         <SuggestedPosts

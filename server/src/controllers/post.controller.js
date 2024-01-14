@@ -7,7 +7,7 @@ import Comment from "../models/comment.model.js";
 class PostController {
   read = async (req, res, next) => {
     try {
-      const post = await Post.find({}).populate([
+      const post = await Post.find().populate([
         {
           path: "user",
           select: ["avatar", "name", "verified"],
@@ -17,7 +17,7 @@ class PostController {
       if (post.length == 0) {
         return res.status(404).json({ msg: "Post not found" });
       }
-      return res.json({ post });
+      return res.json(post);
     } catch (error) {
       next({
         msg: "Unable to show post at this moment",
@@ -28,7 +28,7 @@ class PostController {
 
   readBySlug = async (req, res, next) => {
     try {
-      const post = await Post.find({ slug: req.params.slug }).populate([
+      const post = await Post.findOne({ slug: req.params.slug }).populate([
         {
           path: "user",
           select: ["avatar", "name"],
@@ -47,13 +47,19 @@ class PostController {
             },
           ],
         },
+        {
+          path: "categories",
+
+          select: ["_id", "title"],
+        },
       ]);
 
-      if (post.length == 0) {
+      if (!post) {
         return res.status(404).json({ msg: "Post not found" });
       }
-      return res.json({ post });
+      return res.json(post);
     } catch (error) {
+      console.error("Error in readBySlug:", error);
       next({
         msg: "Unable to show post at this moment",
         status: 400,

@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.use(authRoutes);
 router.use("/profile", authCheck, profileRoutes);
-router.use("/posts", authCheck, adminCheck, postRoutes);
+router.use("/posts", postRoutes);
 router.use("/comments", authCheck, commentRoutes);
 router.use("/categories", authCheck, adminCheck, postCategories);
 
