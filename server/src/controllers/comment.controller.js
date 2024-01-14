@@ -8,7 +8,7 @@ class CommentController {
       if (comments.length == 0) {
         return res.status(404).json({ msg: "Comment not found" });
       }
-      return res.json({ comments });
+      return res.json(comments);
     } catch (error) {
       next({
         msg: "Unable to show post at this moment",
@@ -32,7 +32,7 @@ class CommentController {
         replyOnUser,
       });
       const savedComment = await newComment.save();
-      return res.status(201).json({ savedComment });
+      return res.status(201).json(savedComment);
     } catch (error) {
       next({
         msg: "Unable to post comment at this moment",

@@ -44,6 +44,12 @@ class PostController {
             {
               path: "replies",
               match: { check: true },
+              populate: [
+                {
+                  path: "user",
+                  select: ["avatar", "name"],
+                },
+              ],
             },
           ],
         },

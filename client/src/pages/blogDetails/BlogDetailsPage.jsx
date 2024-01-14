@@ -16,6 +16,7 @@ import { generateHTML } from "@tiptap/html";
 import parse from "html-react-parser";
 import BlogDetailSkeleton from "./components/blogDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
+import { useSelector } from "react-redux";
 
 const postsData = [
   {
@@ -55,6 +56,7 @@ const tagsData = [
 
 export const BlogDetailsPage = () => {
   const { slug } = useParams();
+  const userState = useSelector((state) => state.user);
   const [breadCrumbsData, setBreadCrumbsData] = useState([]);
   const [body, setBody] = useState(null);
 
@@ -106,12 +108,15 @@ export const BlogDetailsPage = () => {
                 </Link>
               ))}
             </div>
-
             <h1 className="text-lg font-bold font-roboto mt-4 text-dark-hard md:text-[26px]">
               {data?.title}
             </h1>
             <div className="mt-4 prose prose-sm sm:prose-base">{body}</div>
-            <CommentsContainer className="mt-10 " logginedUserId="a" />
+            <CommentsContainer
+              comments={data?.comments}
+              className="mt-10 "
+              logginedUserId={userState?.userInfo?._id}
+            />
           </article>
           <SuggestedPosts
             header={"Latest Article"}
