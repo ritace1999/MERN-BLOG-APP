@@ -6,7 +6,7 @@ import { SuggestedPosts } from "./container/SuggestedPosts";
 import { CommentsContainer } from "../../components/comments/CommentsContainer";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { getPostBySlug } from "../../services/index/posts";
+import { getPost, getPostBySlug } from "../../services/index/posts";
 import Bold from "@tiptap/extension-bold";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -44,15 +44,6 @@ const postsData = [
     createdAt: "2023-09-01",
   },
 ];
-const tagsData = [
-  "Technology",
-  "Science",
-  "Education",
-  "Foods",
-  "Medical",
-  "Life",
-  "Nature",
-];
 
 export const BlogDetailsPage = () => {
   const { slug } = useParams();
@@ -77,6 +68,10 @@ export const BlogDetailsPage = () => {
       );
     },
   });
+  const { data: postsData } = useQuery({
+    queryFn: () => getPost(),
+    queryKey: ["posts"],
+  });
 
   return (
     <MainLayout>
@@ -89,7 +84,7 @@ export const BlogDetailsPage = () => {
           <article className="flex-1  ">
             <BreadCrumbs data={breadCrumbsData} />
             <img
-              className="rounded-xl w-full"
+              className="rounded-xl w-full h-[200px] md:h-[400px] lg:h-[515px]"
               src={
                 data?.photo
                   ? stables.UPLOAD_FOLDER_BASE_URL + data.photo
@@ -116,13 +111,14 @@ export const BlogDetailsPage = () => {
               comments={data?.comments}
               className="mt-10 "
               logginedUserId={userState?.userInfo?._id}
+              postSlug={slug}
             />
           </article>
           <SuggestedPosts
             header={"Latest Article"}
             posts={postsData}
-            tags={tagsData}
-            className="mt-8 lg:mt-10 lg:mx-5 lg:max-w-[360px] "
+            tags={data?.tags}
+            className="mt-8 lg:mt-14 lg:mx-5 lg:max-w-[360px] "
           />
         </section>
       )}

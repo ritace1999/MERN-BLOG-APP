@@ -11,7 +11,7 @@ const router = express.Router();
 router.use(authRoutes);
 router.use("/profile", authCheck, profileRoutes);
 router.use("/posts", postRoutes);
-router.use("/comments", authCheck, commentRoutes);
+router.use("/comments", commentRoutes);
 router.use("/categories", authCheck, adminCheck, postCategories);
 
 router.use(routesErr);

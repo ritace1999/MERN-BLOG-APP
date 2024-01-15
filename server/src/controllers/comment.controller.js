@@ -61,10 +61,10 @@ class CommentController {
   delete = async (req, res, next) => {
     try {
       const comment = await Comment.findByIdAndDelete(req.params.commentId);
+      await Comment.deleteMany({ parent: comment._id });
       if (!comment) {
         return res.status(404).json({ msg: "Comment not found to delete" });
       }
-      await Comment.deleteMany({ parent: comment.commentId });
       return res.status(201).json({ msg: "Comment deleted sucessfully" });
     } catch (error) {
       next({
