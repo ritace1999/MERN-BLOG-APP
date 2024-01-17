@@ -18,7 +18,7 @@ const NavItemCollapse = ({
 
   return (
     <div
-      className="collapse-arrow collapse grid  min-h-0 grid-cols-[auto,0.8fr] bg-base-200 py-0 text-[#a5a5a5]  "
+      className="collapse-arrow collapse grid  grid-cols-[auto,0.8fr] bg-base-200 text-[#a5a5a5] md:grid-cols-[auto,400px]  "
       checked={name === activeNavName}
     >
       <input

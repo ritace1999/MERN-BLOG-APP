@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { AiFillDashboard, AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { LiaComments } from "react-icons/lia";
 import { MdDashboard } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useWindowSize } from "@uidotdev/usehooks";
 import NavItem from "./NavItem";
 import NavItemCollapse from "./NavItemCollapse";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../store/actions/user";
+import { MdLogout } from "react-icons/md";
 
 const menuItems = [
   {
@@ -38,6 +41,8 @@ const AdminHeader = () => {
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [activeNavName, setActiveNavName] = useState("dashboard");
   const windowSize = useWindowSize();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const toggleMenu = () => {
     setIsMenuActive((prevState) => !prevState);
   };
@@ -48,6 +53,10 @@ const AdminHeader = () => {
       setIsMenuActive(true);
     }
   }, [windowSize.width]);
+  const logoutHandler = () => {
+    dispatch(logout());
+    navigate("/");
+  };
 
   return (
     <header className=" flex h-fit w-full items-center justify-between p-4 lg:h-full lg:max-w-[300px] lg:flex-col lg:items-start lg:justify-start lg:p-0 ">
@@ -103,6 +112,15 @@ const AdminHeader = () => {
                   />
                 ),
               )}
+            </div>
+            <div
+              className="  mt-[300px] w-[60%] cursor-pointer gap-x-2 rounded-full bg-slate-100 py-[6px]  text-dark-hard delay-[100ms] ease-out hover:bg-primary  hover:text-white md:mt-[650px] md:w-[30%] lg:mt-[290px] lg:w-[60%] "
+              onClick={logoutHandler}
+            >
+              <span className="mx-6 flex flex-row items-center">
+                <MdLogout className=" text-xl font-extrabold " />
+                <button className="text-lg font-extrabold">Log Out</button>
+              </span>
             </div>
           </div>
         </div>
