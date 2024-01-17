@@ -7,20 +7,51 @@ import Comment from "../models/comment.model.js";
 class PostController {
   read = async (req, res, next) => {
     try {
-      const post = await Post.find().populate([
-        {
-          path: "user",
-          select: ["avatar", "name", "verified"],
-        },
-      ]);
-
-      if (post.length == 0) {
-        return res.status(404).json({ msg: "Post not found" });
+      const filter = req.query.searchKeyword;
+      let where = {};
+      if (filter) {
+        where.title = { $regex: filter, $options: "i" };
       }
-      return res.json(post);
+
+      const total = await Post.countDocuments();
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.limit) || 10;
+      const pages = Math.ceil(total / pageSize);
+
+      if (page > pages) {
+        return next({
+          msg: "No page found",
+          status: 400,
+        });
+      }
+
+      const skip = (page - 1) * pageSize;
+
+      const query = Post.find(where)
+        .skip(skip)
+        .limit(pageSize)
+        .populate([
+          {
+            path: "user",
+            select: ["avatar", "name", "verified"],
+          },
+        ])
+        .sort({ updatedAt: "desc" });
+
+      const result = await query;
+
+      res.set({
+        "x-filter": filter,
+        "x-totalcount": JSON.stringify(total),
+        "x-current-page": JSON.stringify(page),
+        "x-pagesize": JSON.stringify(pageSize),
+        "x-totalpagecount": JSON.stringify(pages),
+      });
+
+      return res.json(result);
     } catch (error) {
       next({
-        msg: "Unable to show post at this moment",
+        msg: "Unable to show posts at this moment",
         status: 400,
       });
     }
@@ -65,7 +96,6 @@ class PostController {
       }
       return res.json(post);
     } catch (error) {
-      console.error("Error in readBySlug:", error);
       next({
         msg: "Unable to show post at this moment",
         status: 400,
