@@ -11,18 +11,14 @@ import { loginUser } from "../../services/index/apiService";
 import { userActions } from "../../store/reducers/userReducer";
 
 function LoginLayout() {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState({ password: false });
   const [showRemainingTime, setShowRemainingTime] = useState(false);
-  const [timeLeft, setTimeLeft] = useState({ minutes: 5, seconds: 0 });
+  const [timeLeft, setTimeLeft] = useState(30);
 
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
 
   const navigate = useNavigate();
-
-  function onChange(value) {
-    setVerified(true);
-  }
 
   useEffect(() => {
     const storedLoginAttempts =
@@ -32,26 +28,19 @@ function LoginLayout() {
 
     if (storedLoginAttempts >= 5 && storedTimeoutEnd > Date.now()) {
       const remainingTime = Math.ceil((storedTimeoutEnd - Date.now()) / 1000);
-      const minutes = Math.floor(remainingTime / 60);
-      const seconds = remainingTime % 60;
+      setTimeLeft(remainingTime);
 
       setShowRemainingTime(true);
-      setTimeLeft({ minutes, seconds });
 
       const interval = setInterval(() => {
         setTimeLeft((prevTime) => {
-          if (prevTime.minutes <= 0 && prevTime.seconds <= 0) {
+          if (prevTime <= 0) {
             clearInterval(interval);
             localStorage.removeItem(`loginTimeoutEnd_${userState.email}`);
             setShowRemainingTime(false);
-            return { minutes: 0, seconds: 0 };
+            return 0;
           }
-
-          const totalSeconds = prevTime.minutes * 60 + prevTime.seconds - 1;
-          const minutes = Math.floor(totalSeconds / 60);
-          const seconds = totalSeconds % 60;
-
-          return { minutes, seconds };
+          return prevTime - 1;
         });
       }, 1000);
 
@@ -75,14 +64,12 @@ function LoginLayout() {
           const remainingTime = Math.ceil(
             (storedTimeoutEnd - Date.now()) / 1000
           );
-          const minutes = Math.floor(remainingTime / 60);
-          const seconds = remainingTime % 60;
 
           setShowRemainingTime(true);
-          setTimeLeft({ minutes, seconds });
+          setTimeLeft(remainingTime);
 
           toast.error(
-            `Account temporarily locked. Please try again in ${minutes} minutes and ${seconds} seconds.`
+            `Account temporarily locked. Please try again in ${remainingTime} seconds.`
           );
           return;
         }
@@ -109,30 +96,23 @@ function LoginLayout() {
         );
 
         if (loginAttempts >= 5) {
-          const timeoutEnd =
-            Date.now() + timeLeft.minutes * 60 * 1000 + timeLeft.seconds * 1000;
+          const timeoutEnd = Date.now() + timeLeft * 1000;
           localStorage.setItem(
             `loginTimeoutEnd_${values.email}`,
             timeoutEnd.toString()
           );
 
           setShowRemainingTime(true);
-          setTimeLeft({ minutes: 5, seconds: 0 });
 
           const interval = setInterval(() => {
             setTimeLeft((prevTime) => {
-              if (prevTime.minutes <= 0 && prevTime.seconds <= 0) {
+              if (prevTime <= 0) {
                 clearInterval(interval);
                 localStorage.removeItem(`loginTimeoutEnd_${values.email}`);
                 setShowRemainingTime(false);
-                return { minutes: 0, seconds: 0 };
+                return 0;
               }
-
-              const totalSeconds = prevTime.minutes * 60 + prevTime.seconds - 1;
-              const minutes = Math.floor(totalSeconds / 60);
-              const seconds = totalSeconds % 60;
-
-              return { minutes, seconds };
+              return prevTime - 1;
             });
           }, 1000);
         }
@@ -141,7 +121,7 @@ function LoginLayout() {
   });
 
   return (
-    <Layout className=" container">
+    <Layout className="container">
       <section className="w-3/4 mx-auto flex flex-col gap-10">
         <div className="title">
           <h1 className="text-grey-800 text-4xl font bold py-4">Login Here</h1>
@@ -182,8 +162,13 @@ function LoginLayout() {
               {...formik.getFieldProps("password")}
             />
             <span
-              onClick={() => setShow({ ...show, password: !show.password })}
-              className=" flex items-center px-4 cursor-pointer "
+              onClick={() =>
+                setShow((prevShow) => ({
+                  ...prevShow,
+                  password: !prevShow.password,
+                }))
+              }
+              className="flex items-center px-4 cursor-pointer"
             >
               <HiFingerPrint size={20} />
             </span>
@@ -193,9 +178,7 @@ function LoginLayout() {
             <span className="text-rose-500">{formik.errors.email}</span>
           ) : formik.errors.password && formik.touched.password ? (
             <span className="text-rose-500">{formik.errors.password}</span>
-          ) : (
-            <></>
-          )}
+          ) : null}
 
           <div className="input_button">
             <button className={`${styles.button} mt-2`} type="submit">
@@ -205,8 +188,7 @@ function LoginLayout() {
         </form>
         {showRemainingTime && (
           <div className="text-center text-red-500">
-            Account temporarily locked. Please try again in {timeLeft.minutes}{" "}
-            minutes and {timeLeft.seconds} seconds.
+            Account temporarily locked. Please try again in {timeLeft} seconds.
           </div>
         )}
         <p className="text-center text-dark-light">

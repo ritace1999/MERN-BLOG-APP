@@ -18,33 +18,6 @@ import BlogDetailSkeleton from "./components/blogDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useSelector } from "react-redux";
 
-const postsData = [
-  {
-    _id: "1",
-    image: images.PostOneImage,
-    title: "Futures signal crypto's mainstream adoption.",
-    createdAt: "2023-09-01",
-  },
-  {
-    _id: "2",
-    image: images.PostOneImage,
-    title: "Futures signal crypto's mainstream adoption.",
-    createdAt: "2023-09-01",
-  },
-  {
-    _id: "3",
-    image: images.PostOneImage,
-    title: "Futures signal crypto's mainstream adoption.",
-    createdAt: "2023-09-01",
-  },
-  {
-    _id: "4",
-    image: images.PostOneImage,
-    title: "Futures signal crypto's mainstream adoption.",
-    createdAt: "2023-09-01",
-  },
-];
-
 export const BlogDetailsPage = () => {
   const { slug } = useParams();
   const userState = useSelector((state) => state.user);
@@ -63,8 +36,8 @@ export const BlogDetailsPage = () => {
 
       setBody(
         parse(
-          generateHTML(data?.body, [Document, Paragraph, Text, Bold, Italic])
-        )
+          generateHTML(data?.body, [Document, Paragraph, Text, Bold, Italic]),
+        ),
       );
     },
   });
@@ -80,11 +53,11 @@ export const BlogDetailsPage = () => {
       ) : isError ? (
         <ErrorMessage message={"Error occured while fetching data."} />
       ) : (
-        <section className=" container mx-auto w-[88%] flex flex-col  py-5 lg:flex-row lg:gap-x5 lg:items-start">
+        <section className=" lg:gap-x5 container mx-auto flex w-[88%]  flex-col py-5 lg:flex-row lg:items-start">
           <article className="flex-1  ">
             <BreadCrumbs data={breadCrumbsData} />
             <img
-              className="rounded-xl w-full h-[200px] md:h-[400px] lg:h-[515px]"
+              className="h-[200px] w-full rounded-xl md:h-[400px] lg:h-[515px]"
               src={
                 data?.photo
                   ? stables.UPLOAD_FOLDER_BASE_URL + data.photo
@@ -97,16 +70,16 @@ export const BlogDetailsPage = () => {
                 <Link
                   key={category._id}
                   to={`/blog?category=${category.title}`}
-                  className="text-primary text-sm font-roboto inline-block  md:text-base"
+                  className="inline-block font-roboto text-sm text-primary  md:text-base"
                 >
                   {category.title}
                 </Link>
               ))}
             </div>
-            <h1 className="text-lg font-bold font-roboto mt-4 text-dark-hard md:text-[26px]">
+            <h1 className="mt-4 font-roboto text-lg font-bold text-dark-hard md:text-[26px]">
               {data?.title}
             </h1>
-            <div className="mt-4 prose prose-sm sm:prose-base">{body}</div>
+            <div className="prose prose-sm mt-4 sm:prose-base">{body}</div>
             <CommentsContainer
               comments={data?.comments}
               className="mt-10 "
@@ -118,7 +91,7 @@ export const BlogDetailsPage = () => {
             header={"Latest Article"}
             posts={postsData}
             tags={data?.tags}
-            className="mt-8 lg:mt-14 lg:mx-5 lg:max-w-[360px] "
+            className="mt-8 lg:mx-5 lg:mt-14 lg:max-w-[360px] "
           />
         </section>
       )}

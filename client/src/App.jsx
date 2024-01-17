@@ -10,6 +10,11 @@ import { Articles } from "./pages/home/container/Articles";
 import Password from "./pages/password/Password";
 import ResetPasswordForm from "./pages/reset/Reset";
 import OTPPage from "./pages/otp/OTPPage";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+import Comments from "./pages/dashboard/screens/comment/Comments";
+import Admin from "./pages/dashboard/screens/Admin";
+import CreatePost from "./pages/dashboard/screens/posts/CreatePost";
+import ManagePost from "./pages/dashboard/screens/posts/ManagePost";
 
 function App() {
   return (
@@ -21,6 +26,12 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/dashboard" element={<DashboardPage />}>
+          <Route index element={<Admin />} />
+          <Route path="comments" element={<Comments />} />
+          <Route path="posts/new" element={<CreatePost />} />
+          <Route path="posts/manage" element={<ManagePost />} />
+        </Route>
         <Route path="/password" element={<Password />} />
         <Route path="/reset-password/:token" element={<ResetPasswordForm />} />
         <Route path="/otp" element={<OTPPage />} />

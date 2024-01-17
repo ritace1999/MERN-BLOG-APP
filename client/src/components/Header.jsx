@@ -20,20 +20,20 @@ const NavItem = ({ item }) => {
     });
   };
   return (
-    <li className=" relative group">
+    <li className=" group relative">
       {item.type === "link" ? (
         <>
           <Link to="/" className="px-4 py-2">
             {item.name}
           </Link>
-          <span className=" cursor-pointer text-blue-500 absolute transition-all duration-500 font-bold right-0 top-0  group-hover:right-[90%] opacity-0 group-hover:opacity-100">
+          <span className=" absolute right-0 top-0 cursor-pointer font-bold text-blue-500 opacity-0 transition-all  duration-500 group-hover:right-[90%] group-hover:opacity-100">
             |
           </span>
         </>
       ) : (
         <div className=" flex flex-col items-center">
           <button
-            className="px-4 py-2 flex gap-x-1 items-center"
+            className="flex items-center gap-x-1 px-4 py-2"
             onClick={toggleHandler}
           >
             <span>{item.name}</span>
@@ -42,14 +42,14 @@ const NavItem = ({ item }) => {
           <div
             className={`${
               dropdown ? "block" : "hidden"
-            } lg:hidden transition-all duration-500 pt-4 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-max `}
+            } w-max pt-4 transition-all duration-500 lg:absolute lg:bottom-0 lg:right-0 lg:hidden lg:translate-y-full lg:transform lg:group-hover:block `}
           >
-            <ul className="bg-dark-hard lg:bg-transparent text-center flex flex-col shadow-lg rounded-lg overflow-hidden">
+            <ul className="flex flex-col overflow-hidden rounded-lg bg-dark-hard text-center shadow-lg lg:bg-transparent">
               {item.items.map((page, index) => (
                 <Link
                   key={index}
                   to="/"
-                  className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white lg:text-dark-soft"
+                  className="px-4 py-2 text-white hover:bg-dark-soft hover:text-white lg:text-dark-soft"
                 >
                   {page}
                 </Link>
@@ -80,24 +80,24 @@ export const Header = () => {
   };
 
   return (
-    <section className="sticky bg-[#E2E0DD]  top-0 left-0 right-0 z-50">
-      <header className="container mx-auto px-2 flex justify-between py-4 items-center">
+    <section className="sticky left-0  right-0 top-0 z-50 bg-[#E2E0DD]">
+      <header className="container mx-auto flex items-center justify-between px-2 py-4">
         <div>
-          <h2 className=" font-extrabold text-xl">
-            <Link className="w-16 text-blue-800 animate-pulse" to="/">
+          <h2 className=" text-xl font-extrabold">
+            <Link className="w-16 animate-pulse text-blue-800" to="/">
               BLOG APP
             </Link>
           </h2>
         </div>
-        <div className="lg:hidden z-50">
+        <div className="z-50 lg:hidden">
           {navIsVisible ? (
             <AiOutlineClose
-              className="w-6 -h-6"
+              className="-h-6 w-6"
               onClick={navVisibilityHandler}
             />
           ) : (
             <AiOutlineMenu
-              className="w-6 -h-6"
+              className="-h-6 w-6"
               onClick={navVisibilityHandler}
             />
           )}
@@ -105,10 +105,10 @@ export const Header = () => {
         <div
           className={`${
             navIsVisible ? "right-0 " : "-right-full"
-          } transition-all  duration-300 mt-[60px] lg:mt-0 bg-dark-hard lg:bg-transparent z-[49]
-           flex flex-col w-full lg:w-auto justify-center lg:justify-end lg:flex-row fixed top-0 bottom-0  lg:static gap-x-9 items-center`}
+          } fixed  bottom-0 top-0 z-[49] mt-[60px] flex w-full
+           flex-col items-center justify-center gap-x-9 bg-dark-hard transition-all duration-300 lg:static lg:mt-0 lg:w-auto  lg:flex-row lg:justify-end lg:bg-transparent`}
         >
-          <ul className="text-white justify-center items-center gap-y-5 lg:text-dark-soft flex flex-col lg:flex-row gap-x-2 font-semibold">
+          <ul className="flex flex-col items-center justify-center gap-x-2 gap-y-5 font-semibold text-white lg:flex-row lg:text-dark-soft">
             {NavItemsInfo.map((item) => (
               <NavItem key={item.name} item={item} />
             ))}
@@ -116,21 +116,21 @@ export const Header = () => {
           {userState.userInfo ? (
             <div
               className="
-              text-white
-              justify-center
-              items-center
-              gap-y-5
-              lg:text-dark-soft
               flex
               flex-col
-              lg:flex-row
+              items-center
+              justify-center
               gap-x-2
-              font-semibold"
+              gap-y-5
+              font-semibold
+              text-white
+              lg:flex-row
+              lg:text-dark-soft"
             >
-              <div className="relative group">
+              <div className="group relative">
                 <div className=" flex flex-col items-center">
                   <button
-                    className=" flex gap-x-1 items-center lg:mx-6 mt-5 lg:mt-0 border-2 border-blue-600 text-blue-600 px-4 py-2 rounded-full font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300"
+                    className=" mt-5 flex items-center gap-x-1 rounded-full border-2 border-blue-600 px-4 py-2 font-semibold text-blue-600 transition-all duration-300 hover:bg-blue-600 hover:text-white lg:mx-6 lg:mt-0"
                     onClick={() => setprofileDropdown(!profileDropdown)}
                   >
                     <span>Account</span>
@@ -140,18 +140,26 @@ export const Header = () => {
                   <div
                     className={`${
                       profileDropdown ? "block" : "hidden"
-                    } lg:hidden transition-all duration-500 pt-4 lg:px-8 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-full `}
+                    } w-full pt-4 transition-all duration-500 lg:absolute lg:bottom-0 lg:right-0 lg:hidden lg:translate-y-full lg:transform lg:px-8 lg:group-hover:block `}
                   >
-                    <ul className="bg-dark-hard lg:bg-transparent text-center flex flex-col shadow-lg rounded-lg overflow-hidden">
+                    <ul className="flex w-[110px] flex-col overflow-hidden rounded-lg bg-dark-hard text-center shadow-2xl lg:bg-transparent">
+                      {userState.userInfo.admin && (
+                        <button
+                          onClick={() => navigate("/dashboard")}
+                          className="px-3 py-2 text-white hover:bg-dark-soft hover:text-white lg:text-dark-soft"
+                        >
+                          Dashboard
+                        </button>
+                      )}
                       <button
                         onClick={() => navigate("/profile")}
-                        className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white lg:text-dark-soft"
+                        className="px-4 py-2 text-white hover:bg-dark-soft hover:text-white lg:text-dark-soft"
                       >
                         Profile
                       </button>
                       <button
                         onClick={logoutHandler}
-                        className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white lg:text-dark-soft"
+                        className="px-4 py-2 text-white hover:bg-dark-soft hover:text-white lg:text-dark-soft"
                       >
                         Logout
                       </button>
@@ -161,7 +169,7 @@ export const Header = () => {
               </div>
             </div>
           ) : (
-            <button className="mt-5 lg:mt-0 border-2 border-blue-600 text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300">
+            <button className="mt-5 rounded-full border-2 border-blue-600 px-6 py-2 font-semibold text-blue-600 transition-all duration-300 hover:bg-blue-600 hover:text-white lg:mt-0">
               <Link to="/login">Login </Link>
             </button>
           )}

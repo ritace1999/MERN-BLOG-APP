@@ -81,15 +81,15 @@ function Register() {
 
   return (
     <Layout>
-      <section className="w-3/4 mx-auto flex flex-col gap-2">
+      <section className="mx-auto flex w-3/4 flex-col gap-2">
         <div className="title">
-          <h1 className="text-grey-800 text-4xl font bold py-4">
+          <h1 className="text-grey-800 font bold py-4 text-4xl">
             Register Here
           </h1>
         </div>
         {/* form*/}
         <form
-          className="flex flex-col gap-4 container"
+          className="container flex flex-col gap-4"
           onSubmit={formik.handleSubmit}
         >
           <div
@@ -145,17 +145,17 @@ function Register() {
               />
               <span
                 onClick={() => setShow({ ...show, password: !show.password })}
-                className="icon flex items-center px-4 cursor-pointer	"
+                className="icon flex cursor-pointer items-center px-4	"
               >
                 <HiFingerPrint size={20} />
               </span>
             </div>
             {/* Password strength bar */}
             {formik.values.password && (
-              <div className="absolute bottom-0 w-full h-2">
+              <div className="absolute bottom-0 h-2 w-full">
                 <div
                   className={`h-full ${getPasswordStrengthColor(
-                    passwordStrength
+                    passwordStrength,
                   )}`}
                   style={{
                     width: `${(passwordStrength + 1) * 20}%`,
@@ -168,7 +168,7 @@ function Register() {
 
           {/* Password strength meter */}
           {formik.values.password && (
-            <div className="text-sm mt-2">
+            <div className="mt-2 text-sm">
               Password Strength: {getPasswordStrengthLabel(passwordStrength)}
             </div>
           )}
@@ -191,7 +191,7 @@ function Register() {
             />
             <span
               onClick={() => setShow({ ...show, cpassword: !show.cpassword })}
-              className="icon flex items-center px-4 cursor-pointer	"
+              className="icon flex cursor-pointer items-center px-4	"
             >
               <HiFingerPrint size={20} />
             </span>
@@ -214,7 +214,7 @@ function Register() {
             </button>
           </div>
         </form>
-        <p className="text-center text-dark-light">
+        <p className="mt-4 text-center text-dark-light">
           Already have an account?
           <Link className="text-blue-500 hover:text-blue-700" to={"/login"}>
             Login Here.
