@@ -15,9 +15,11 @@ const ManagePost = () => {
   const queryClient = useQueryClient();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [confirmationModal, setConfirmationModal] = useState({
+    isOpen: false,
+    slug: null,
+  });
   const userState = useSelector((state) => state.user);
-  console.log(userState.userInfo._id);
 
   const {
     data: postsData,
@@ -216,27 +218,16 @@ const ManagePost = () => {
                             <td className=" flex gap-2 px-6 py-10 md:py-12 lg:py-8 items-center bg-white border-b md:text-lg  border-gray-200">
                               <button
                                 disabled={deleteIsLoading}
-                                onClick={() => setConfirmationModal(true)}
+                                onClick={() =>
+                                  setConfirmationModal({
+                                    isOpen: true,
+                                    slug: post.slug,
+                                  })
+                                }
                                 className="flex r justify-center items-center w-8 h-8 text-white rounded-md hover:opacity-75 text-center text-[25px] bg-red-500 disabled:cursor-not-allowed "
                               >
                                 <HiOutlineTrash />
                               </button>
-                              {confirmationModal && (
-                                <span>
-                                  <Confirmation
-                                    onCancel={() => setConfirmationModal(false)}
-                                    message={
-                                      "Are you sure want to delete this post ?"
-                                    }
-                                    onConfirm={() => {
-                                      deletePostHandler({
-                                        slug: post?.slug,
-                                        token: userState.userInfo.token,
-                                      });
-                                    }}
-                                  />
-                                </span>
-                              )}
 
                               <Link
                                 to={`/dashboard/posts/manage/edit/${post?.slug}`}
@@ -264,6 +255,19 @@ const ManagePost = () => {
           </div>
         </div>
       </div>
+      {confirmationModal.isOpen && (
+        <Confirmation
+          onCancel={() => setConfirmationModal({ isOpen: false, slug: null })}
+          message={"Are you sure want to delete this post?"}
+          onConfirm={() => {
+            deletePostHandler({
+              slug: confirmationModal.slug,
+              token: userState.userInfo.token,
+            });
+            setConfirmationModal({ isOpen: false, slug: null });
+          }}
+        />
+      )}
     </div>
   );
 };
