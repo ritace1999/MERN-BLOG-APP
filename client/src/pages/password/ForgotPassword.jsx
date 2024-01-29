@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "../../styles/form.module.css";
 
 import toast from "react-hot-toast"; // Import toast
-import { forgotPassword } from "../../services/index/apiService";
+import { forgotPassword } from "../../services/index/users";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");

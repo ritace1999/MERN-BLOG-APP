@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { HiEnvelope, HiFingerPrint, HiUser } from "react-icons/hi2";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
@@ -7,7 +7,7 @@ import {
   getUserProfile,
   updateProfile,
   updatePassword,
-} from "../../services/index/apiService";
+} from "../../services/index/users";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -27,6 +27,7 @@ function ProfileLayout() {
     data: profileData,
     isLoading: profileIsLoading,
     error: profileError,
+    refetch,
   } = useQuery({
     queryFn: () => {
       return getUserProfile({ token: userState.userInfo.token });
@@ -107,7 +108,7 @@ function ProfileLayout() {
                   Edit Your Profile
                 </h1>
               </div>
-              <ProfilePicture avatar={profileData?.avatar} />
+              <ProfilePicture avatar={profileData?.avatar} refetch={refetch} />
               <form
                 className="flex flex-col gap-4 container"
                 onSubmit={formik.handleSubmit}

@@ -81,7 +81,7 @@ export const Header = () => {
 
   return (
     <section className="sticky left-0  right-0 top-0 z-50 bg-[#E2E0DD]">
-      <header className="container mx-auto flex items-center justify-between px-2 py-4">
+      <header className="container mx-auto flex items-center justify-between px-2 pt-2 ">
         <div>
           <h2 className=" text-xl font-extrabold">
             <Link className="w-16 animate-pulse text-blue-800" to="/">

@@ -13,8 +13,8 @@ import OTPPage from "./pages/otp/OTPPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import Comments from "./pages/dashboard/screens/comment/Comments";
 import Admin from "./pages/dashboard/screens/Admin";
-import CreatePost from "./pages/dashboard/screens/posts/CreatePost";
 import ManagePost from "./pages/dashboard/screens/posts/ManagePost";
+import EditPost from "./pages/dashboard/screens/posts/EditPost";
 
 function App() {
   return (
@@ -29,8 +29,8 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />}>
           <Route index element={<Admin />} />
           <Route path="comments" element={<Comments />} />
-          <Route path="posts/new" element={<CreatePost />} />
           <Route path="posts/manage" element={<ManagePost />} />
+          <Route path="posts/manage/edit/:slug" element={<EditPost />} />
         </Route>
         <Route path="/password" element={<Password />} />
         <Route path="/reset-password/:token" element={<ResetPasswordForm />} />

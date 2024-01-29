@@ -9,10 +9,9 @@ const app = express();
 config();
 const PORT = process.env.PORT;
 
-app.use("/uploads", express.static("src/uploads"));
-
-app.use(cors());
 app.use(express.json());
+app.use(cors());
+app.use("/uploads", express.static("src/uploads"));
 
 app.use(routes);
 

@@ -1,15 +1,14 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import AdminHeader from "./components/AdminHeader";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getUserProfile } from "../../services/index/apiService";
+import { getUserProfile } from "../../services/index/users";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const userState = useSelector((state) => state.user);
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading } = useQuery({
     queryFn: () => {
       return getUserProfile({ token: userState.userInfo.token });
     },
@@ -35,7 +34,7 @@ const Dashboard = () => {
   return (
     <div className=" flex h-screen flex-col lg:flex-row">
       <AdminHeader />
-      <main className="flex-1 bg-[#E2E0DD] p-4 lg:p-6">
+      <main className="flex-1 bg-[#E2E0DD] p-4 lg:p-6 lg:ml-[300px] mt-8 lg:mt-2">
         <Outlet />
       </main>
     </div>

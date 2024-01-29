@@ -1,6 +1,6 @@
 // OTPPage.js
 
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
 import styles from "../../styles/form.module.css";

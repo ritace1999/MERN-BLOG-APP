@@ -12,33 +12,12 @@ class PostController {
       if (filter) {
         where.title = { $regex: filter, $options: "i" };
       }
-
-      const total = await Post.countDocuments();
+      let query = Post.find(where);
       const page = parseInt(req.query.page) || 1;
       const pageSize = parseInt(req.query.limit) || 10;
-      const pages = Math.ceil(total / pageSize);
-
-      if (page > pages) {
-        return next({
-          msg: "No page found",
-          status: 400,
-        });
-      }
-
       const skip = (page - 1) * pageSize;
-
-      const query = Post.find(where)
-        .skip(skip)
-        .limit(pageSize)
-        .populate([
-          {
-            path: "user",
-            select: ["avatar", "name", "verified"],
-          },
-        ])
-        .sort({ updatedAt: "desc" });
-
-      const result = await query;
+      const total = await Post.find(where).countDocuments();
+      const pages = Math.ceil(total / pageSize);
 
       res.set({
         "x-filter": filter,
@@ -47,11 +26,38 @@ class PostController {
         "x-pagesize": JSON.stringify(pageSize),
         "x-totalpagecount": JSON.stringify(pages),
       });
+      if (page > pages) {
+        return res.json([]);
+      }
 
-      return res.json(result);
+      const result = await query
+        .skip(skip)
+        .limit(pageSize)
+        .populate([
+          {
+            path: "user",
+            select: ["avatar", "name", "verified"],
+          },
+          {
+            path: "categories",
+            select: ["title"],
+          },
+        ])
+        .sort({ updatedAt: "desc" });
+
+      return res.json({
+        headers: {
+          "x-filter": filter,
+          "x-totalcount": total,
+          "x-current-page": page,
+          "x-pagesize": pageSize,
+          "x-totalpagecount": pages,
+        },
+        data: result,
+      });
     } catch (error) {
       next({
-        msg: "Unable to show posts at this moment",
+        msg: "Unable to show post at this moment",
         status: 400,
       });
     }
@@ -105,13 +111,19 @@ class PostController {
 
   createPost = async (req, res, next) => {
     try {
-      const post = await Post.create({
-        ...req.body,
+      const post = new Post({
+        title: "sample title",
+        caption: "sample caption",
         slug: uuidv4(),
+        body: {
+          type: "doc",
+          content: [],
+        },
+        photo: "",
         user: req.user._id,
       });
-
-      return res.status(201).json({ post, msg: "Post created sucessfully" });
+      const createdPost = await post.save();
+      return res.status(201).json(createdPost);
     } catch (error) {
       next({
         msg: "Unable to post at this moment",
@@ -119,13 +131,15 @@ class PostController {
       });
     }
   };
+
   update = async (req, res, next) => {
     try {
       const post = await Post.findOne({ slug: req.params.slug });
+
       if (!post) {
         return res.status(404).json({ msg: "No post to update" });
       }
-      const upload = uploadPic.single("postPhoto");
+
       const handlePostUpdate = async (data) => {
         const { title, caption, slug, body, tags, categories } =
           JSON.parse(data);
@@ -136,42 +150,42 @@ class PostController {
         post.tags = tags || post.tags;
         post.categories = categories || post.categories;
         const updatedPost = await post.save();
-        return res.json({ updatedPost, msg: "Post updated sucessfully" });
+        return res.json({ updatedPost, msg: "Post updated successfully" });
       };
-      upload(req, res, async function (err) {
+
+      uploadPic.single("postPhoto")(req, res, async function (err) {
         if (err) {
-          const error = new Error(
-            "An unknown error occurred when uploading" + error.message
-          );
-          next(error);
+          next({ msg: "An error occurred while uploading photo " + err });
         } else {
           if (req.file) {
-            let filename;
+            let filename = post.photo;
 
-            filename = post.photo;
             if (filename) {
-              fileRemover(filename);
+              await fileRemover(filename);
             }
+
             post.photo = req.file.filename;
-            handlePostUpdate(req.body.document);
+            await handlePostUpdate(req.body.document);
           } else {
-            let filename;
-            filename = post.photo;
+            let filename = post.photo;
             post.photo = "";
-            fileRemover(filename);
-            handlePostUpdate(req.body.document);
+
+            if (filename) {
+              await fileRemover(filename);
+            }
+
+            await handlePostUpdate(req.body.document);
           }
         }
       });
-
-      // res.json({ updatedPost, msg: "Post updated" });
     } catch (error) {
       next({
-        msg: "Unable to update post at this moment",
+        msg: "Unable to update post at this moment" + error,
         status: 400,
       });
     }
   };
+
   deletePost = async (req, res, next) => {
     try {
       const post = await Post.findOneAndDelete({ slug: req.params.slug });

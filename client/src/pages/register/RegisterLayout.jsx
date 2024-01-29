@@ -6,7 +6,7 @@ import { HiEnvelope, HiFingerPrint, HiUser } from "react-icons/hi2";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import { registerValidate } from "../../lib/AuthValidation";
-import { registerUser } from "../../services/index/apiService";
+import { registerUser } from "../../services/index/users";
 import zxcvbn from "zxcvbn";
 import { useDispatch } from "react-redux";
 
@@ -155,7 +155,7 @@ function Register() {
               <div className="absolute bottom-0 h-2 w-full">
                 <div
                   className={`h-full ${getPasswordStrengthColor(
-                    passwordStrength,
+                    passwordStrength
                   )}`}
                   style={{
                     width: `${(passwordStrength + 1) * 20}%`,

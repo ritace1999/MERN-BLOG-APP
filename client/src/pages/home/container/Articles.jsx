@@ -13,8 +13,6 @@ export const Articles = () => {
     queryKey: ["posts"],
     onError: (error) => {
       toast.error(error.message);
-      console.log(error);
-      console.log(data);
     },
   });
 
@@ -31,7 +29,7 @@ export const Articles = () => {
         ) : isError ? (
           <ErrorMessage message="Error occured while fetching data." />
         ) : (
-          data.map((post) => (
+          data?.data?.map((post) => (
             <ArticleCard
               key={post._id}
               post={post}

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { stables } from "../../../constants";
+import { images, stables } from "../../../constants";
 import ErrorMessage from "../../../components/ErrorMessage";
 export const SuggestedPosts = ({ className, header, posts = [], tags }) => {
   return (

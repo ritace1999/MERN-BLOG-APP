@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { toast } from "react-hot-toast";
 import { HiFingerPrint } from "react-icons/hi";
 import styles from "../../styles/form.module.css";
 import { resetPasswordValidate } from "../../lib/AuthValidation";
-import { resetPassword } from "../../services/index/apiService";
+import { resetPassword } from "../../services/index/users";
 import { MainLayout } from "../../components/MainLayout";
 import { useMutation } from "@tanstack/react-query";
 import zxcvbn from "zxcvbn";

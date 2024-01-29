@@ -1,21 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import getCroppedImg from "./cropImage";
 import Cropper from "react-easy-crop";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateProfilePic } from "../../services/index/apiService";
+import { useMutation } from "@tanstack/react-query";
+import { updateProfilePic } from "../../services/index/users";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { userActions } from "../../store/reducers/userReducer";
 import toast from "react-hot-toast";
 
-const CropEasy = ({ photo, setOpenCrop }) => {
+const CropEasy = ({ photo, setOpenCrop, refetch }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [avatarKey, setAvatarKey] = useState(Date.now());
 
-  const queryClient = useQueryClient();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   const userState = useSelector((state) => state.user);
 
   // ... (previous code)
@@ -47,7 +46,10 @@ const CropEasy = ({ photo, setOpenCrop }) => {
 
       // Dispatch and show success toast
       dispatch(userActions.setUserInfo(mergedData));
+
+      setAvatarKey(Date.now());
       toast.success("Avatar updated successfully");
+      refetch();
     },
   });
 
@@ -82,7 +84,10 @@ const CropEasy = ({ photo, setOpenCrop }) => {
   };
 
   return (
-    <div className="fixed z-[1000] inset-0 bg-black/50 flex justify-center p-5 overflow-auto">
+    <div
+      key={avatarKey}
+      className="fixed z-[1000] inset-0 bg-black/50 flex justify-center p-5 overflow-auto"
+    >
       <div className="bg-white h-fit w-full sm:max-w-[350px] p-5 rounded-lg">
         <h2 className="font-semibold text-dark-hard text-center mb-2">
           Crop Image
@@ -119,13 +124,13 @@ const CropEasy = ({ photo, setOpenCrop }) => {
         <div className="flex justify-between gap-2 flex-wrap">
           <button
             onClick={() => setOpenCrop(false)}
-            className="px-5 py-2.5 rounded-lg text-primary border border-primary text-sm disabled:opacity-70"
+            className="px-5 py-2.5 rounded-lg text-primary border border-primary text-sm hover:opacity-70"
           >
             Cancel
           </button>
           <button
             onClick={handleCropImage}
-            className="px-5 py-2.5 rounded-lg text-white bg-primary text-sm disabled:opacity-70"
+            className="px-5 py-2.5 rounded-lg text-white bg-primary text-sm hover:opacity-70"
           >
             Update
           </button>

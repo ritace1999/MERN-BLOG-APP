@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Layout from "../../components/authLayout/AuthLayout";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,7 +7,7 @@ import { HiEnvelope, HiFingerPrint } from "react-icons/hi2";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import { loginValidate } from "../../lib/AuthValidation";
-import { loginUser } from "../../services/index/apiService";
+import { loginUser } from "../../services/index/users";
 import { userActions } from "../../store/reducers/userReducer";
 
 function LoginLayout() {

@@ -1,12 +1,12 @@
 // OTPPage.js
 
-import React, { useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+
 import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
 import styles from "../../styles/form.module.css";
 import toast from "react-hot-toast"; // Import toast
 import { MainLayout } from "../../components/MainLayout";
-import { verifyOTP } from "../../services/index/apiService";
+import { verifyOTP } from "../../services/index/users";
 
 const OTPPage = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
