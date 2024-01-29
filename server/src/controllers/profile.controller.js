@@ -1,12 +1,13 @@
 import { uploadPic } from "../middleware/upload.profile.js";
 import { fileRemover } from "../utils/fileRemover.js";
+import bcrypt from "bcrypt";
 
 import User from "../models/user.model.js";
 
 class ProfileController {
   user = async (req, res, next) => {
     try {
-      const user = req.user;
+      const user = await User.findById(req.user._id);
 
       res.json({
         _id: user._id,
@@ -25,7 +26,7 @@ class ProfileController {
   };
   update = async (req, res, next) => {
     try {
-      const { name, email, password } = req.body;
+      const { name, email } = req.body;
       const userId = req.user._id;
 
       // Find the user by ID
@@ -38,31 +39,26 @@ class ProfileController {
         });
       }
 
-      // Update profile details if provided
-      if (name) {
-        user.name = name;
+      // Check if there are any changes
+      const changes = {};
+      if (name && name !== user.name) {
+        changes.name = name;
       }
 
-      if (email) {
-        user.email = email;
+      if (email && email !== user.email) {
+        changes.email = email;
       }
 
-      if (password) {
-        // Check if the current password matches the user's stored password
-        const isMatch = await user.comparePassword(password);
-
-        if (!isMatch) {
-          return next({
-            msg: "Current password is incorrect",
-            status: 400,
-          });
-        }
-
-        // Update the user's password with the new password
-        user.password = newPassword;
+      if (Object.keys(changes).length === 0) {
+        // No changes, respond with an error message
+        return next({
+          msg: "No changes made to the profile",
+          status: 400,
+        });
       }
 
-      // Save the updated user document
+      // Apply changes and save the updated user document
+      user.set(changes);
       await user.save();
 
       // Fetch the updated user to include in the response
@@ -80,6 +76,61 @@ class ProfileController {
     } catch (error) {
       next({
         msg: "Unable to update profile",
+        status: 500,
+      });
+    }
+  };
+
+  passwordUpdate = async (req, res, next) => {
+    try {
+      const { opassword, password } = req.body;
+      const userId = req.user._id;
+
+      // Validate input fields
+      if (!opassword || !password) {
+        return res
+          .status(400)
+          .json({ msg: "Both password are required to update" });
+      }
+
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return next({
+          msg: "User not found",
+          status: 404,
+        });
+      }
+
+      const passwordMatch = await bcrypt.compare(opassword, user.password);
+
+      if (passwordMatch) {
+        // Check if new password is same as old password
+        const newPasswordMatchesOld = await bcrypt.compare(
+          password,
+          user.password
+        );
+        if (newPasswordMatchesOld) {
+          return next({
+            msg: "New password cannot be the same as the old password",
+            status: 422,
+          });
+        }
+
+        const hash = await bcrypt.hash(password, 10);
+        await user.updateOne({ password: hash });
+        return res.json({
+          msg: "Password changed successfully.",
+        });
+      } else {
+        return next({
+          msg: "Incorrect Old Password",
+          status: 401,
+        });
+      }
+    } catch (err) {
+      return next({
+        msg: err.message || "An error occurred while changing password",
         status: 500,
       });
     }
@@ -133,6 +184,39 @@ class ProfileController {
       // Handle any other errors
       next({
         msg: "Unable to update profile Picture",
+        status: 500,
+      });
+    }
+  };
+  deleteAvatar = async (req, res, next) => {
+    try {
+      // Check if the user has an avatar before attempting to remove it
+      if (!req.user.avatar) {
+        throw new Error("No avatar found for deletion");
+      }
+
+      // Remove the avatar file from disk
+      fileRemover(req.user.avatar);
+
+      // Set the avatar field to undefined in the database
+      const updatedUser = await User.findByIdAndUpdate(
+        req.user._id,
+        { $unset: { avatar: 1 } },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ msg: "User not found" });
+      }
+
+      res.json({ msg: "Avatar deleted successfully" });
+    } catch (error) {
+      if (error.message === "No avatar found for deletion") {
+        return res.status(404).json({ msg: "No avatar found for deletion" });
+      }
+
+      next({
+        msg: "Unable to fulfill the request at this moment",
         status: 500,
       });
     }

@@ -1,96 +1,93 @@
-import { Link } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
 import { BreadCrumbs } from "../../components/BreadCrumbs";
 import { MainLayout } from "../../components/MainLayout";
-import { images } from "../../constants";
+import { images, stables } from "../../constants";
 import { SuggestedPosts } from "./container/SuggestedPosts";
 import { CommentsContainer } from "../../components/comments/CommentsContainer";
-
-const breadCrumbsData = [
-  { name: "Home", link: "/" },
-  { name: "Blog", link: "/blog" },
-  { name: "Article title", link: "/blog/1" },
-];
-
-const postsData = [
-  {
-    _id: "1",
-    image: images.PostOneImage,
-    title: "Futures signal crypto's mainstream adoption.",
-    createdAt: "2023-09-01",
-  },
-  {
-    _id: "2",
-    image: images.PostOneImage,
-    title: "Futures signal crypto's mainstream adoption.",
-    createdAt: "2023-09-01",
-  },
-  {
-    _id: "3",
-    image: images.PostOneImage,
-    title: "Futures signal crypto's mainstream adoption.",
-    createdAt: "2023-09-01",
-  },
-  {
-    _id: "4",
-    image: images.PostOneImage,
-    title: "Futures signal crypto's mainstream adoption.",
-    createdAt: "2023-09-01",
-  },
-];
-const tagsData = [
-  "Technology",
-  "Science",
-  "Education",
-  "Foods",
-  "Medical",
-  "Life",
-  "Nature",
-];
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { getPost, getPostBySlug } from "../../services/index/posts";
+import BlogDetailSkeleton from "./components/blogDetailSkeleton";
+import ErrorMessage from "../../components/ErrorMessage";
+import { useSelector } from "react-redux";
+import { parseJsonToHTML } from "../../utils/parseJsonToHTML";
+import Editor from "../../components/tiptap/Editor";
 
 export const BlogDetailsPage = () => {
+  const { slug } = useParams();
+  const userState = useSelector((state) => state.user);
+  const [breadCrumbsData, setBreadCrumbsData] = useState([]);
+  const [body, setBody] = useState(null);
+
+  const { data, isError, isLoading } = useQuery({
+    queryFn: () => getPostBySlug({ slug }),
+    queryKey: ["blog", slug],
+    onSuccess: (data) => {
+      setBreadCrumbsData([
+        { name: "Home", link: "/" },
+        { name: "Blog", link: "/blog" },
+        { name: "Article title", link: `/blog/${data.slug}` },
+      ]);
+
+      setBody(parseJsonToHTML(data?.body));
+    },
+  });
+  const { data: postsData } = useQuery({
+    queryFn: () => getPost(),
+    queryKey: ["posts"],
+  });
+
   return (
     <MainLayout>
-      <section className=" container mx-auto w-[88%] flex flex-col  py-5 lg:flex-row lg:gap-x5 lg:items-start">
-        <article className="flex-1  ">
-          <BreadCrumbs data={breadCrumbsData} />
-          <img
-            className="rounded-xl w-full"
-            src={images.PostOneImage}
-            alt="art"
+      {isLoading ? (
+        <BlogDetailSkeleton />
+      ) : isError ? (
+        <ErrorMessage message={"Error occured while fetching data."} />
+      ) : (
+        <section className=" lg:gap-x5 container mx-auto flex w-[88%]  flex-col py-5 lg:flex-row lg:items-start">
+          <article className="flex-1  ">
+            <BreadCrumbs data={breadCrumbsData} />
+            <img
+              className="h-[200px] w-full rounded-xl md:h-[400px] lg:h-[515px]"
+              src={
+                data?.photo
+                  ? stables.UPLOAD_FOLDER_BASE_URL + data.photo
+                  : images.notFound
+              }
+              alt="art"
+            />
+            <div className="mt-4 pl-2 flex gap-2">
+              {data?.categories.map((category) => (
+                <Link
+                  key={category._id}
+                  to={`/blog?category=${category.title}`}
+                  className="inline-block font-roboto text-sm text-primary  md:text-base"
+                >
+                  {category.title}
+                </Link>
+              ))}
+            </div>
+            <h1 className="mt-4 pl-2 font-roboto text-lg font-bold text-dark-hard md:text-[26px]">
+              {data?.title}
+            </h1>
+            {!isLoading && !isError && (
+              <Editor content={data?.body} editable={false} />
+            )}
+            <CommentsContainer
+              comments={data?.comments}
+              className="mt-10 "
+              logginedUserId={userState?.userInfo?._id}
+              postSlug={slug}
+            />
+          </article>
+          <SuggestedPosts
+            header={"Latest Article"}
+            posts={postsData?.data}
+            tags={data?.tags}
+            className="mt-8 lg:mx-5 lg:mt-14 lg:max-w-[360px] "
           />
-          <Link
-            to="/blog?category=selectedCategory"
-            className="text-primary text-sm font-roboto inline-block mt-4 md:text-base"
-          >
-            TECHNOLOGY
-          </Link>
-          <h1 className="text-lg font-bold font-roboto mt-4 text-dark-hard md:text-[26px]">
-            The futures are a sign that the cryptocurrency is becoming
-            mainstream.
-          </h1>
-          <div className="mt-4 text-dark-soft">
-            <p className="leading-7 text-sm">
-              The emergence of futures contracts for cryptocurrencies signals
-              their growing acceptance in mainstream finance. These contracts
-              attract institutional investors, offering risk management tools,
-              increased liquidity, and regulatory oversight. They contribute to
-              price discovery, fostering stability. However, the cryptocurrency
-              market remains speculative and volatile, necessitating caution and
-              research for investors. While futures reflect a maturing
-              landscape, the inherent risks, including price fluctuations and
-              regulatory shifts, persist.
-            </p>
-          </div>
-          <CommentsContainer className="mt-10 " logginedUserId="a" />
-        </article>
-        <SuggestedPosts
-          header={"Latest Article"}
-          posts={postsData}
-          tags={tagsData}
-          className="mt-8 lg:mt-10 lg:mx-5 lg:max-w-[360px] "
-        />
-      </section>
+        </section>
+      )}
     </MainLayout>
   );
 };

@@ -1,4 +1,4 @@
-import { images } from "../../constants";
+import { images, stables } from "../../constants";
 import { BiMessageMinus, BiEditAlt, BiTrash } from "react-icons/bi";
 import { CommentForm } from "./CommentForm";
 export const Comment = ({
@@ -27,7 +27,11 @@ export const Comment = ({
   return (
     <div className="flex flex-nowrap items-start gap-x-3 bg-white p-3 rounded-lg">
       <img
-        src={images.profilePic}
+        src={
+          comment?.user?.avatar
+            ? stables.UPLOAD_FOLDER_BASE_URL + comment.user.avatar
+            : images.Avatar
+        }
         alt="profile "
         className="w-9 h-9 object-cover rounded-full"
       />
