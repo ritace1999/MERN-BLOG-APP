@@ -25,7 +25,7 @@ export const BlogDetailsPage = () => {
     onSuccess: (data) => {
       setBreadCrumbsData([
         { name: "Home", link: "/" },
-        { name: "Blog", link: "/blog" },
+        { name: "Blog", link: "/articles" },
         { name: "Article title", link: `/blog/${data.slug}` },
       ]);
 

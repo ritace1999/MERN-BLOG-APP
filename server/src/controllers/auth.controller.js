@@ -62,6 +62,7 @@ class AuthController {
         email: user.email,
         verified: user.verified,
         admin: user.admin,
+        superAdmin: user.superAdmin,
         token: token,
       });
     } catch (err) {

@@ -63,6 +63,70 @@ class PostController {
     }
   };
 
+  readSpecific = async (req, res, next) => {
+    try {
+      const filter = req.query.searchKeyword;
+      const userId = req.user?._id;
+
+      let where = { user: userId };
+
+      if (filter) {
+        where.title = { $regex: filter, $options: "i" };
+      }
+
+      let query = Post.find(where);
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * pageSize;
+      const total = await Post.find(where).countDocuments();
+      const pages = Math.ceil(total / pageSize);
+
+      res.set({
+        "x-filter": filter,
+        "x-totalcount": JSON.stringify(total),
+        "x-current-page": JSON.stringify(page),
+        "x-pagesize": JSON.stringify(pageSize),
+        "x-totalpagecount": JSON.stringify(pages),
+      });
+
+      if (page > pages) {
+        return res.json([]);
+      }
+
+      const result = await query
+        .skip(skip)
+        .limit(pageSize)
+        .populate([
+          {
+            path: "user",
+            select: ["avatar", "name", "verified"],
+          },
+          {
+            path: "categories",
+            select: ["title"],
+          },
+        ])
+        .sort({ updatedAt: "desc" });
+
+      return res.json({
+        headers: {
+          "x-filter": filter,
+          "x-totalcount": total,
+          "x-current-page": page,
+          "x-pagesize": pageSize,
+          "x-totalpagecount": pages,
+        },
+        data: result,
+      });
+    } catch (error) {
+      console.log(error);
+      next({
+        msg: "Unable to show posts at this moment",
+        status: 400,
+      });
+    }
+  };
+
   readBySlug = async (req, res, next) => {
     try {
       const post = await Post.findOne({ slug: req.params.slug }).populate([
@@ -150,7 +214,9 @@ class PostController {
         post.tags = tags || post.tags;
         post.categories = categories || post.categories;
         const updatedPost = await post.save();
-        return res.json({ updatedPost, msg: "Post updated successfully" });
+        return res
+          .status(200)
+          .json({ updatedPost, msg: "Post updated successfully" });
       };
 
       uploadPic.single("postPhoto")(req, res, async function (err) {
@@ -193,7 +259,7 @@ class PostController {
         return res.status(404).json({ msg: "No post to delete" });
       }
       await Comment.deleteMany({ post: post._id });
-      return res.status(201).json({ msg: "Post deleted sucessfully" });
+      return res.status(200).json({ msg: "Post deleted sucessfully" });
     } catch (error) {
       next({
         msg: "Unable to delete post at this moment",

@@ -5,6 +5,7 @@ import { authCheck, adminCheck } from "../../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.get("/", PostController.read);
+router.get("/user", authCheck, PostController.readSpecific);
 router.get("/:slug", PostController.readBySlug);
 router.post("/", authCheck, adminCheck, PostController.createPost);
 router.put("/:slug", authCheck, adminCheck, PostController.update);

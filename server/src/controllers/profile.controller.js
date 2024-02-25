@@ -24,6 +24,7 @@ class ProfileController {
       });
     }
   };
+
   update = async (req, res, next) => {
     try {
       const { name, email } = req.body;

@@ -21,7 +21,7 @@ import {
 
 const promiseOptions = async (inputValue) => {
   const categoriesData = await getCategories();
-  return filterCategories(inputValue, categoriesData);
+  return filterCategories(inputValue, categoriesData.data);
 };
 const EditPost = () => {
   const { slug } = useParams();
@@ -165,13 +165,12 @@ const EditPost = () => {
             )}
             <div className="mt-4 flex gap-2">
               {data?.categories.map((category) => (
-                <Link
+                <div
                   key={category._id}
-                  to={`/blog?category=${category.title}`}
-                  className="inline-block font-roboto text-sm text-primary  md:text-base"
+                  className="inline-block font-roboto text-sm text-primary  md:text-base cursor-pointer"
                 >
                   {category.title}
-                </Link>
+                </div>
               ))}
             </div>
             <div className="form-control w-full ">

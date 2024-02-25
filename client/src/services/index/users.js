@@ -170,3 +170,47 @@ export const forgotPassword = async (email) => {
     }
   }
 };
+
+export const getUsers = async (
+  token,
+  searchKeyword = "",
+  page = 1,
+  limit = 5
+) => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const response = await axiosInstance.get(
+      `/users?searchKeyword=${searchKeyword}&page=${page}&limit=${limit}`,
+      config
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data.message)
+      throw new Error(error.response.data.message);
+    throw new Error(error.message);
+  }
+};
+export const deleteUser = async ({ token, userId }) => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const response = await axiosInstance.delete(
+      `/users/delete/${userId}`,
+      config
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data.message)
+      throw new Error(error.response.data.message);
+    throw new Error(error.message);
+  }
+};
