@@ -10,7 +10,6 @@ const PostSchema = new Schema(
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     tags: { type: [String] },
     categories: [{ type: Schema.Types.ObjectId, ref: "PostCategories" }],
-    featured: { type: String, default: false },
   },
   {
     timestamps: true,

@@ -192,7 +192,7 @@ function LoginLayout() {
           </div>
         )}
         <p className="text-center text-dark-light">
-          Don't have an account yet?
+          Don't have an account yet?{" "}
           <Link className="text-blue-500 hover:text-blue-700" to={"/register"}>
             Register Here.
           </Link>

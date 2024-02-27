@@ -10,10 +10,10 @@ import {
 } from "../../services/index/users";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/reducers/userReducer";
 import ProfilePicture from "../../components/ProfilePicture";
+import { useNavigate } from "react-router-dom";
 
 function ProfileLayout() {
   const [show, setShow] = useState({ opassword: false, password: false });
@@ -21,6 +21,14 @@ function ProfileLayout() {
   const dispatch = useDispatch();
 
   const userState = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!userState || !userState.userInfo) {
+      navigate("/login");
+      toast.error("You need to log in to access this page.");
+    }
+  }, [userState, navigate]);
 
   // Fetch user profile data using the useQuery hook
   const {

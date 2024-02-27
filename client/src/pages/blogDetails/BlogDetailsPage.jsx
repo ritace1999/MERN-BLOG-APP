@@ -57,7 +57,7 @@ export const BlogDetailsPage = () => {
               alt="art"
             />
             <div className="mt-4 pl-2 flex gap-2">
-              {data?.categories.map((category) => (
+              {data?.categories.slice(0, 1).map((category) => (
                 <Link
                   key={category._id}
                   to={`/blog?category=${category.title}`}

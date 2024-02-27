@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
-
+import Post from "../models/post.model.js";
+import Comment from "../models/comment.model.js";
 class UserController {
   read = async (req, res, next) => {
     try {
@@ -55,6 +56,8 @@ class UserController {
       if (!userId) {
         res.status(404).json({ msg: "User not found" });
       }
+      await Post.deleteMany({ user: userId });
+      await Comment.deleteMany({ user: userId });
       await User.findByIdAndDelete(userId);
       res.status(200).json({ msg: "User deleted" });
     } catch (error) {
