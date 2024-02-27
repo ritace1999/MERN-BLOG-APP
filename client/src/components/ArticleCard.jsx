@@ -31,8 +31,8 @@ export const ArticleCard = ({ post, className }) => {
               <img
                 className="cursor-pointer rounded-full w-9 h-9 md:w-10 md:h-10"
                 src={
-                  post.user.avatar
-                    ? stables.UPLOAD_FOLDER_BASE_URL + post.user.avatar
+                  post?.user?.avatar
+                    ? stables.UPLOAD_FOLDER_BASE_URL + post?.user?.avatar
                     : images.Avatar
                 }
                 alt="profilepicture"
@@ -40,10 +40,10 @@ export const ArticleCard = ({ post, className }) => {
 
               <div className="flex flex-col">
                 <h4 className="font-bold italic text-dark-soft text-sm md:text-base ">
-                  {post.user.name}
+                  {post?.user?.name}
                 </h4>
                 <div className="flex items-center gap-x-2">
-                  {post.user.verified ? (
+                  {post?.user?.verified ? (
                     <span className="bg-[#35B37E] w-fit bg-opacity-20 p-1.5 rounded-full">
                       <BiCheck className="w-3 h-3 text-[#1c7650]" />
                     </span>
@@ -53,14 +53,14 @@ export const ArticleCard = ({ post, className }) => {
                     </span>
                   )}
                   <span className="italic text-dark-light text-xs md:text-sm">
-                    {post.user.verified ? "Verified" : "Unverified"} Writer
+                    {post?.user?.verified ? "Verified" : "Unverified"} Writer
                   </span>
                 </div>
               </div>
             </div>
             <span className=" flex gap-2 font-bold text-dark-light italic text-sm md:text-base ">
-              <p>{new Date(post.createdAt).getDate()}</p>
-              {new Date(post.createdAt).toLocaleDateString("default", {
+              <p>{new Date(post?.createdAt).getDate()}</p>
+              {new Date(post?.createdAt).toLocaleDateString("default", {
                 month: "long",
               })}
             </span>

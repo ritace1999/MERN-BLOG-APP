@@ -10,6 +10,8 @@ import Google from "../assets/footerIcon/Google.png";
 import Git from "../assets/footerIcon/Github.png";
 import Avatar from "../assets/user-avatar.png";
 import AuthImg from "../assets/AuthPic.jpg";
+import AboutBg from "../assets/AboutBg.png";
+import ContactUs from "../assets/contactUs.png";
 const images = {
   HeroImage,
   PostOneImage,
@@ -23,5 +25,7 @@ const images = {
   Git,
   AuthImg,
   Avatar,
+  AboutBg,
+  ContactUs,
 };
 export default images;

@@ -21,6 +21,8 @@ const Pagination = ({
     onPageChange(currentPage - 1);
   };
   let lastPage = paginationRange[paginationRange.length - 1];
+  console.log("Current Page:", currentPage);
+  console.log("Last Page:", lastPage);
   return (
     <div className="flex flex-col items-center px-5 py-5 bg-white ">
       <div className="flex items-center">
@@ -55,7 +57,11 @@ const Pagination = ({
           return (
             <button
               type="button"
-              className={`w-full px-4 py-2  border-dark-hard text-base border ${pagenumber === currentPage ? "text-white bg-dark-soft" : "text-gray-500 bg-white hover:bg-gray-100"}`}
+              className={`w-full px-4 py-2  border-dark-hard text-base border ${
+                pagenumber === currentPage
+                  ? "text-white bg-dark-soft"
+                  : "text-gray-500 bg-white hover:bg-gray-100"
+              }`}
               onClick={() => onPageChange(pagenumber)}
               key={index}
             >

@@ -25,7 +25,10 @@ export const Comment = ({
   const repliedCommentId = parentId ? parentId : comment._id;
   const replyOnUserId = comment.user._id;
   return (
-    <div className="flex flex-nowrap items-start gap-x-3 bg-white p-3 rounded-lg">
+    <div
+      className="flex flex-nowrap items-start gap-x-3 bg-white p-3 rounded-lg"
+      id={`comment-${comment._id}`}
+    >
       <img
         src={
           comment?.user?.avatar

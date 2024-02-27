@@ -29,6 +29,7 @@
     "@tiptap/react": "^2.1.16",
     "@tiptap/starter-kit": "^2.1.16",
     "@uidotdev/usehooks": "^2.4.1",
+    "animate.css": "^4.1.1",
     "axios": "^1.5.1",
     "formik": "^2.4.5",
     "highlight.js": "^11.9.0",

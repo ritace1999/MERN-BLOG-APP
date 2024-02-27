@@ -6,6 +6,7 @@ const router = express.Router();
 
 // Use a POST request for creating a new post
 router.get("/", CommentController.read);
+router.get("/:postSlug", authCheck, CommentController.readPostComment);
 router.post("/", authCheck, CommentController.create);
 router.put("/:commentId", authCheck, CommentController.update);
 router.delete("/:commentId", authCheck, CommentController.delete);
