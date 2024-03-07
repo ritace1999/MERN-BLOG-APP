@@ -131,7 +131,7 @@ Here are screenshots showcasing sample pages from this project.
     ✓ Articles Page
   </summary>
 
-  <img  src=''>
+  <img  src='https://github.com/ritace1999/MERN-BLOG-APP/blob/main/client/src/assets/screenShots/ArticlesPage%20(1).png'>
 
 </details>
 
@@ -140,7 +140,7 @@ Here are screenshots showcasing sample pages from this project.
     ✓ Article details page
   </summary>
   
-<img  src=''>
+<img  src='https://github.com/ritace1999/MERN-BLOG-APP/blob/main/client/src/assets/screenShots/articlesDetailPage.png'>
 </details>
 
 <details>
