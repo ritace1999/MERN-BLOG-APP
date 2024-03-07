@@ -1,6 +1,4 @@
 import HeroImage from "../assets/HeroImage.svg";
-import PostOneImage from "../assets/posts/post1.jpg";
-import profilePic from "../assets/posts/profilePic.jpg";
 import notFound from "../assets/posts/notFound.png";
 import Waves from "../assets/svg.png";
 import CtaPic from "../assets/CtaPic.jpg";
@@ -14,8 +12,6 @@ import AboutBg from "../assets/AboutBg.png";
 import ContactUs from "../assets/contactUs.png";
 const images = {
   HeroImage,
-  PostOneImage,
-  profilePic,
   notFound,
   Waves,
   CtaPic,
