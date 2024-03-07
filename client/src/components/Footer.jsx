@@ -18,13 +18,13 @@ export const Footer = () => {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/">About Us</Link>
+              <Link to="/about-us">About Us</Link>
             </li>
             <li>
               <Link to="/">Pricing</Link>
             </li>
             <li>
-              <Link to="/">Contact Us</Link>
+              <Link to="/contact-us">Contact Us</Link>
             </li>
             <li>
               <Link to="/">Terms</Link>
@@ -37,7 +37,7 @@ export const Footer = () => {
               <Link to="/">Services</Link>
             </li>
             <li>
-              <Link to="/">Blog</Link>
+              <Link to="/articles">Blog</Link>
             </li>
             <li>
               <Link to="/">Products</Link>

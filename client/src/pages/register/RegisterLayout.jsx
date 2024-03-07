@@ -150,7 +150,6 @@ function Register() {
                 <HiFingerPrint size={20} />
               </span>
             </div>
-            {/* Password strength bar */}
             {formik.values.password && (
               <div className="absolute bottom-0 h-2 w-full">
                 <div
@@ -165,16 +164,11 @@ function Register() {
               </div>
             )}
           </div>
-
-          {/* Password strength meter */}
           {formik.values.password && (
             <div className="mt-2 text-sm">
               Password Strength: {getPasswordStrengthLabel(passwordStrength)}
             </div>
           )}
-
-          {/* ... other form fields ... */}
-
           <div
             className={`${styles.input_group} ${
               formik.errors.cpassword && formik.touched.cpassword
@@ -215,7 +209,7 @@ function Register() {
           </div>
         </form>
         <p className="mt-4 text-center text-dark-light">
-          Already have an account?
+          Already have an account?{" "}
           <Link className="text-blue-500 hover:text-blue-700" to={"/login"}>
             Login Here.
           </Link>

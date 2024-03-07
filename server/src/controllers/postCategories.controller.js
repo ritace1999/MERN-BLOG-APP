@@ -3,11 +3,44 @@ import Post from "../models/post.model.js";
 class PostCategoriesController {
   read = async (req, res, next) => {
     try {
-      const category = await PostCategories.find({});
-      if (category.length == 0) {
-        return res.status(404).json({ msg: "Category not found" });
+      const filter = req.query.searchKeyword;
+      let where = {};
+      if (filter) {
+        where.title = { $regex: filter, $options: "i" };
       }
-      return res.json(category);
+      let query = PostCategories.find(where);
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * pageSize;
+      const total = await PostCategories.find(where).countDocuments();
+      const pages = Math.ceil(total / pageSize);
+
+      res.set({
+        "x-filter": filter,
+        "x-totalcount": JSON.stringify(total),
+        "x-current-page": JSON.stringify(page),
+        "x-pagesize": JSON.stringify(pageSize),
+        "x-totalpagecount": JSON.stringify(pages),
+      });
+      if (page > pages) {
+        return res.json([]);
+      }
+
+      const result = await query
+        .skip(skip)
+        .limit(pageSize)
+        .sort({ updatedAt: "desc" });
+
+      return res.json({
+        headers: {
+          "x-filter": filter,
+          "x-totalcount": total,
+          "x-current-page": page,
+          "x-pagesize": pageSize,
+          "x-totalpagecount": pages,
+        },
+        data: result,
+      });
     } catch (error) {
       next({
         msg: "Unable to show categories at this moment",
@@ -15,6 +48,23 @@ class PostCategoriesController {
       });
     }
   };
+  readById = async (req, res, next) => {
+    try {
+      const category = await PostCategories.findById(req.params.categoryId);
+
+      if (!category) {
+        return res.status(404).json({ msg: "Category not found" });
+      }
+
+      return res.json(category);
+    } catch (error) {
+      next({
+        msg: "Unable to create categories at this moment",
+        status: 500,
+      });
+    }
+  };
+
   create = async (req, res, next) => {
     try {
       const { title } = req.body;
@@ -39,7 +89,7 @@ class PostCategoriesController {
 
   update = async (req, res, next) => {
     try {
-      const categoryId = req.params.id;
+      const categoryId = req.params.categoryId;
       const categories = await PostCategories.findByIdAndUpdate(
         categoryId,
         req.body,
@@ -60,7 +110,7 @@ class PostCategoriesController {
   };
   delete = async (req, res, next) => {
     try {
-      const categoryId = req.params.id;
+      const categoryId = req.params.categoryId;
       await Post.updateMany(
         { categories: { $in: [categoryId] } },
 

@@ -6,6 +6,56 @@ const axiosInstance = axios.create({
   baseURL,
 });
 
+export const getComment = async (
+  token,
+  searchKeyword = "",
+  page = 1,
+  limit = 5
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const response = await axiosInstance.get(
+      `/comments?searchKeyword=${searchKeyword}&page=${page}&limit=${limit}`,
+      config
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data.message)
+      throw new Error(error.response.data.message);
+    throw new Error(error.message);
+  }
+};
+export const getCommentByPost = async (
+  token,
+  searchKeyword = "",
+  page = 1,
+  limit = 5
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const response = await axiosInstance.get(
+      `/comments/?searchKeyword=${searchKeyword}&page=${page}&limit=${limit}`,
+      config
+    );
+    console.log(response);
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data.message)
+      throw new Error(error.response.data.message);
+    throw new Error(error.message);
+  }
+};
+
 export const createComment = async ({
   token,
   desc,
@@ -37,7 +87,7 @@ export const createComment = async ({
     throw error;
   }
 };
-export const updateComment = async ({ token, desc, commentId }) => {
+export const updateComment = async ({ token, desc, check, commentId }) => {
   try {
     const config = {
       headers: {
@@ -48,6 +98,7 @@ export const updateComment = async ({ token, desc, commentId }) => {
       `/comments/${commentId}`,
       {
         desc,
+        check,
       },
       config
     );
@@ -70,6 +121,7 @@ export const deleteComment = async ({ token, commentId }) => {
       `/comments/${commentId}`,
       config
     );
+    console.log(response);
 
     return response.data;
   } catch (error) {

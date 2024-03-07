@@ -25,3 +25,19 @@ body {
     @apply text-white  bg-dark-soft;
   }
 }
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #5a7184;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0d2436;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #183b56;
+}
